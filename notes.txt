@@ -1,0 +1,89 @@
+Notes de ma progression sur le projet : 
+
+2/22/25 
+J'essaye de voir si le notebook roule 
+Création de environnement.yml
+- Mis tous les packages dessus 
+- Créer l'environnement : 
+conda env create -f environment.yml
+conda activate env_projet
+
+Erreur : segment_anything non disponible sur conda 
+
+TO DO : 
+requirements.txt et environnement.ylm 
+Yes — but your current .yml has a few issues and is missing packages needed for those imports.
+
+❗ Problems in your file
+
+os ❌ → it’s part of Python’s standard library, do not list it
+
+tqdm ❌ missing
+
+segment_anything ❌ not available on conda → must be installed with pip
+
+utils.SurfaceDice ❗ local module → not installable; it just needs to be in your project folder or PYTHONPATH
+
+PyTorch + MONAI → best installed from the same channel for compatibility
+
+✅ Working environment.yml
+name: env_projet
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.12
+  - numpy
+  - matplotlib
+  - tqdm
+  - pytorch
+  - torchvision
+  - torchaudio
+  - monai
+  - pip
+  - pip:
+      - git+https://github.com/facebookresearch/segment-anything.git
+🚀 Create the environment
+conda env create -f environment.yml
+conda activate env_projet
+📌 About utils.SurfaceDice
+
+This import:
+
+from utils.SurfaceDice import compute_dice_coefficient
+
+means you must have:
+
+your_project/
+│── utils/
+│   └── SurfaceDice.py
+
+Otherwise Python will fail even if the environment is correct.
+
+🔍 (Optional but common for MONAI projects)
+
+If you use NIfTI / medical images, you will likely also need:
+
+  - nibabel
+  - simpleitk
+💻 GPU support (important question)
+
+If you want CUDA:
+
+tell me:
+
+your GPU model
+
+nvidia-smi output
+
+because the PyTorch install line should change (CPU vs CUDA).
+
+✅ Test after activation
+import torch, monai
+print(torch.__version__)
+print(monai.__version__)
+print(torch.cuda.is_available())
+
+If you want, paste the repo’s requirements.txt (or the notebook header) and I’ll generate a perfect reproducible environment.yml for that exact project.
