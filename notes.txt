@@ -1,6 +1,41 @@
 Notes de ma progression sur le projet : 
 
+TODO : 
+- Test download données (semble marcher à date) 
+- Test modèles voir chat apparament moyen de faire un checkpoint : 
+import torch
+from segment_anything import sam_model_registry
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+
+model_type = "vit_b"
+ckpt = "./med_sam_model_best.pth"
+
+medsam = sam_model_registry[model_type](checkpoint=ckpt).to(device)
+medsam.eval()
+
+print("MedSAM loaded on", device)
+
 2/22/25 
+
+Pour ce code : 
+- BRaTS 2021 (du moins quelques sujets)
+Sur le site ça dit "Fait maintenant partit du BraTS 2023, les données ne sont plus disponibles ici 
+Note that starting this year, the label value for ET is "3" (compared to "4" in previous BraTS Challenges).
+
+Je cherche depuis 20 mins les données, partout ca me dit ne sont plus dispos 
+Ici ca c'est mis à marcher : 
+https://imagingdatasets.ucsf.edu/dataset/1 
+There are currently 461 UCSF-BMSR scans that can be used, noting that some are post-treatment and there are no T2 sequences. Currently only the ET tissue class (annotated as label 1) are a available. The full BraTS format annotations on ~325 cases will become available at the end of June.
+https://imagingdatasets.ucsf.edu/dataset/1
+Trouvé à partir d'ici : https://www.synapse.org/Synapse:syn51156910/wiki/622553
+
+- Les modèles 
+SAM : sam_vit_b_01ec64.pth
+MedSAM : modèle fine-tuné
+
+Finalement j'essayais de faire rouler le tutoriel fine-tuning donc je change de document 
+
 J'essaye de voir si le notebook roule 
 Création de environnement.yml
 - Mis tous les packages dessus 
