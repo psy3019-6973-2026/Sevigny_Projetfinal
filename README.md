@@ -6,6 +6,8 @@ Description de mon projet final pour la présentation du 2/26/2026
 ## Informations générales 
 Titre du projet : Brain Tumor Segmentation via SAM-based fine-tuning on structural MRI images
 
+Auteur : Alex Peng
+
 Repo github : https://github.com/AlexPeng517/BHS2023_Project_SAM_MRI/tree/main?tab=readme-ov-file 
 
 URL brainhack : https://school-brainhack.github.io/project/brain_tumor_segmentation_via_sam-based_fine-tuning_on_structural_mri_images/ 
