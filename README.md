@@ -29,6 +29,7 @@ La deuxième, utilisée pour comparer les performances du modèle original et du
 
 ### Résultats 
 La comparaison entre les modèles est faite à partir des Dice score. 
+![Image](image1.png)
 Les résultats montrent que le modèle fine-tune performe mieux.
 
 ## Choix du projet 
