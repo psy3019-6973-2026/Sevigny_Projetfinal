@@ -28,7 +28,8 @@ La première base, utilisée pour le fine-tuning du modèle, provient du jeu de 
 La deuxième, utilisée pour comparer les performances du modèle original et du modèle fine-tuné (évaluation du modèle), est la base BRaTS 2021 (RSNA-ASNR-MICCAI Brain Tumor Segmentation Challenge). Elle comprend 1666 examens avec des séquences T1, T2 et T2-FLAIR au format NIfTI (.nii.gz), accompagnées de leurs segmentations de référence. C'est la deuxième qui est pertinante pour moi, car je compte reproduire le notebook d'évaluation et ajouter des visualisations qui seront produites à partir de ces images. 
 
 ### Résultats 
-La comparaison entre les modèles est faite à partir des Dice score. 
+La comparaison entre les modèles est faite à partir des Dice score. C'est une métrique qui est spécifiquement utilisée pour mesurer le recouvrement entre deux ensembles, donc ici la segmentation par le modèle et la référence. 
+![Image](Dice.png)
 ![Image](Image1.png)
 Les résultats montrent que le modèle fine-tune performe mieux.
 
