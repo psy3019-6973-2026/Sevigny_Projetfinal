@@ -65,6 +65,9 @@ Bonification possible : Ajouter des graphiques diagnostiques spécifiquement rel
 
 ## Tâche 3 : Notebook pédagogique 
 L’objectif de cette tâche est de produire un notebook destiné à un public débutant qui explique de manière progressive le processus de fine-tuning du modèle SAM pour la segmentation de tumeurs cérébrales. C'est la partie du travail que je ne touche pas à date (entraînement du modèle, notebook 1) et je suis interessée à comprendre théoriquement comment le modèle fonctionne et faire un travail de vulgarisation pour comprendre ce qui se passe derrière les commandes clés du notebook d'entraînement. 
+- Présenter SAM et MedSAM : objectifs et différences
+- Expliquer le principe de modèle de fondation et de fine-tuning dans le contexte médical
+- Éléments mathématiques principaux
 
 ## Tâche supplémentaire potentielle
 Si une des tâche ne s'avère pas possible / trop simple, je prévois refactoriser le notebook en pipeline réutilisable (fonctions). 
