@@ -59,7 +59,7 @@ Bonification possible
 ## Tâche 2 : Améliorer la comparaison entre les modèles 
 - Bonifier la figure de visualisation 
 	- Documenter les étapes, choix méthodologiques et artistiques 
-- Ajouter une métrique de comparaison (en ce moment les modèles sont uniquement comparés selon leur performance au DICE score) 
+- Ajouter une métrique de comparaison (en ce moment les modèles sont uniquement comparés selon leur performance au DICE score) ex : Kappa, Hausdorff Distance (HD = distance max entre les contours)
 
 Bonification possible : Ajouter des graphiques diagnostiques spécifiquement reliés aux modèles 
 
