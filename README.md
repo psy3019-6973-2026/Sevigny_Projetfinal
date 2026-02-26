@@ -29,8 +29,11 @@ La deuxième, utilisée pour comparer les performances du modèle original et du
 
 ### Résultats 
 La comparaison entre les modèles est faite à partir des Dice score. C'est une métrique qui est spécifiquement utilisée pour mesurer le recouvrement entre deux ensembles, donc ici la segmentation par le modèle et la référence. 
+
 ![Image](Dice.png)
+
 ![Image](Image1.png)
+
 Les résultats montrent que le modèle fine-tune performe mieux.
 
 ## Choix du projet 
