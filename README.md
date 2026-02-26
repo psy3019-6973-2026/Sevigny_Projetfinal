@@ -77,5 +77,7 @@ Si une des tâche ne s'avère pas possible / trop simple, je prévois refactoris
 Peng, L.-X. A. (2023). BHS2023_Project_SAM_MRI: Brain tumor segmentation via SAM-based fine-tuning on structural MRI images [Code source]. GitHub. https://github.com/AlexPeng517/BHS2023_Project_SAM_MRI 
 
 Segment Anything (original paper) https://arxiv.org/abs/2304.02643
+
 Segment Anything in Medical Images (MedSAM) https://arxiv.org/pdf/2304.12306.pdf
+
 MedSAM github repository https://github.com/bowang-lab/MedSAM
