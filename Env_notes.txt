@@ -1,0 +1,49 @@
+Initial qui fonctionne à créer : 
+
+environment.yml
+name: env_projet
+channels:
+-   conda-forge
+-   defaults
+
+dependencies:
+  - python=3.12
+  - numpy
+  - matplotlib
+  - tqdm
+  - pytorch
+  - torchvision
+  - torchaudio
+  - monai
+
+Nom : env_intial 
+
+À ajouter : 
+
+- nibabel 
+- ipywidgets
+conda install x a marché pour ces 2 la 
+
+- ipykernel
+
+Car en runant sur vscode ça dit : running cells with (env_initial, Python 3.12.12) requires ipykernel
+
+- segment_anything 
+
+Je l'ai installé manuellement pour l'instant : 
+(env_initial) cassa2@DESKTOP-R035LH9:~/psy3019/projet$ pip install segment-anything
+Collecting segment-anything
+  Downloading segment_anything-1.0-py3-none-any.whl.metadata (487 bytes)
+Downloading segment_anything-1.0-py3-none-any.whl (36 kB)
+Installing collected packages: segment-anything
+Successfully installed segment-anything-1.0
+
+  - pip
+  - pip:
+      - segment-anything
+
+- scikit-image
+
+A juste marché localement quand j'ai fait via pip 
+pip install scikit-image
+Conda prenait trop de temps
