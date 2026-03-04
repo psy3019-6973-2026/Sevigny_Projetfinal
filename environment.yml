@@ -12,4 +12,3 @@ dependencies:
   - torchvision
   - torchaudio
   - monai
-  - segment_anything
