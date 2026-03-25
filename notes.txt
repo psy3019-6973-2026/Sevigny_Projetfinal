@@ -16,6 +16,84 @@ medsam.eval()
 
 print("MedSAM loaded on", device)
 
+QUESTIONS : 
+
+- Les données initiales pas accessible car concours terminé 
+- Réussi à naviguer vers une base de données similaires, ok?
+- Pour la tâche de reproduction de notebook, on s'attend à quoi?
+
+3 / 25 / 26 
+
+Trouvé le bon dataset : https://www.kaggle.com/datasets/dschettler8845/brats-2021-task1 
+
+Très grande base de données alors j'essaye de la télécharger partiellement en me faisant un compte Kaggle 
+Token : KGAT_a3be2f3c20b567b34919119582b68336
+
+(env_initial) cassa2@DESKTOP-R035LH9:~/psy3019/projet$ export KAGGLE_API_TOKEN=KGAT_6084ede81117b21fd21ac3c1fe59fb6b
+
+(env_initial) cassa2@DESKTOP-R035LH9:~/psy3019/projet$ kaggle datasets files dschettler8845/brats-2021-task1
+name                                size  creationDate
+---------------------------  -----------  --------------------------
+BraTS2021_00495.tar             10321920  2021-08-19 21:59:03.089000
+BraTS2021_00621.tar             10772480  2021-08-19 21:59:03.067000
+BraTS2021_Training_Data.tar  13396408320  2021-08-19 22:05:19.995000
+
+BraTS2021_00495.tar        → archive d'UN seul cas patient (4 modalités + masque)
+BraTS2021_00621.tar        → archive d'UN seul cas patient (4 modalités + masque)
+BraTS2021_Training_Data.tar → archive de TOUS les 1666 cas patients
+
+Je télécharge les deux individuels 
+kaggle datasets download dschettler8845/brats-2021-task1 -f BraTS2021_00495.tar
+kaggle datasets download dschettler8845/brats-2021-task1 -f BraTS2021_00621.tar
+
+Il y a une cellule pour extraire le .tar mais c'est pour tous les docs alors je le fait manuellement 
+tar -xf BraTS2021_00495.tar
+tar -xf BraTS2021_00621.tar
+
+J'ai besoin de ca : t2.nii.gz (image) et seg.nii.gz (segmentation) 
+mv BraTS2021_00495_t2.nii.gz BraTS2021_00495_seg.nii.gz BraTS2021_00621_t2.nii.gz BraTS2021_00621_seg.nii.gz data
+
+Mettre le reste : mv *.gz *.tar data_not_used
+
+
+3/4/25 
+
+Test de faire un .yml assez simple pour pouvoir ouvrir le code 
+Sans segment anything 
+conda env create -f environment.yml -n env_initial
+
+J'ai ajouté segment anything manuellement : 
+(env_initial) cassa2@DESKTOP-R035LH9:~/psy3019/projet$ pip install segment-anything
+Collecting segment-anything
+  Downloading segment_anything-1.0-py3-none-any.whl.metadata (487 bytes)
+Downloading segment_anything-1.0-py3-none-any.whl (36 kB)
+Installing collected packages: segment-anything
+Successfully installed segment-anything-1.0
+
+Si tout fonctionne je crois je l'ajouterais au env : 
+  - pip
+  - pip:
+      - segment-anything
+
+La fonction : from utils.SurfaceDice import compute_dice_coefficient
+Ne fonctionne pas, elle est utilisée pour la fin du code dont pour le moment je # 
+Je ne trouve pas non plus rien comme compute_dice_coefficient SAM sur GitHub / internet
+
+J'ai du ajouté plusieurs choses à l'environnement futur pour que les premières cellules roulent, tout résumé dans Env_notes.txt 
+
+# Chemins vers les fichiers .nii 
+scan_path = "./brain_images/BraTS2021_00002/BraTS2021_00002_t2.nii.gz" # image médicale (IRM)
+gt_path = "./brain_images/BraTS2021_00002/BraTS2021_00002_seg.nii.gz"  # gt pour ground truth = segmentation correspondante
+
+= l'organisation de la structure doit être : 
+
+projet/
+│── brain_images/
+│── Notebook.ipynb
+
+Je crois que à la place je devrais avoir un : 
+"Path vers les images = """ et ensuite ca serait plus reproductible 
+
 2/22/25 
 
 Pour ce code : 
