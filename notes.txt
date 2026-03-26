@@ -55,6 +55,12 @@ mv BraTS2021_00495_t2.nii.gz BraTS2021_00495_seg.nii.gz BraTS2021_00621_t2.nii.g
 
 Mettre le reste : mv *.gz *.tar data_not_used
 
+Download le checkpoint de l'élève : 
+
+Recherche du checkpoint de SAM : 
+Trouvé ici https://github.com/facebookresearch/segment-anything/blob/main/README.md
+Dans le read me 
+
 
 3/4/25 
 
