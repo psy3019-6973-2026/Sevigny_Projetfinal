@@ -1,26 +1,47 @@
 Notes de ma progression sur le projet : 
 
 TODO : 
-- Test download données (semble marcher à date) 
-- Test modèles voir chat apparament moyen de faire un checkpoint : 
-import torch
-from segment_anything import sam_model_registry
-
-device = "cuda" if torch.cuda.is_available() else "cpu"
-
-model_type = "vit_b"
-ckpt = "./med_sam_model_best.pth"
-
-medsam = sam_model_registry[model_type](checkpoint=ckpt).to(device)
-medsam.eval()
-
-print("MedSAM loaded on", device)
+- Download la grosse base de données 
 
 QUESTIONS : 
 
-- Les données initiales pas accessible car concours terminé 
-- Réussi à naviguer vers une base de données similaires, ok?
+X Les données initiales pas accessible car concours terminé NVM
 - Pour la tâche de reproduction de notebook, on s'attend à quoi?
+
+3 / 26 / 26 
+
+Maintenant je suis rendue à faire run la loop, je l'essaye sur 2 participants 
+
+ISSUE : je dois mtn utiliser surface dice qui ne s'importe pas 
+---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+Cell In[33], line 2
+      1 #Compute DICE score on both original and fine-tuned models
+----> 2 from utils.SurfaceDice import compute_dice_coefficient
+      4 sam_dsc = compute_dice_coefficient(gt_2d>0, sam_seg>0)
+      5 medsam_dsc = compute_dice_coefficient(gt_2d>0, medsam_seg>0)
+
+ModuleNotFoundError: No module named 'utils'
+
+Je crois que ça c'est pas un package mais plutôt dans un dossier utils/compute_dice_score
+
+Comment Python traduit un import
+Quand tu écris :
+pythonfrom utils.SurfaceDice import compute_dice_coefficient
+Python cherche automatiquement dans cet ordre :
+
+Le dossier actuel ./utils/SurfaceDice.py
+Les packages installés (site-packages/)
+
+Donc utils.SurfaceDice est en fait l'équivalent de ./utils/SurfaceDice.py — Python fait la traduction . → / lui-même en arrière-plan !
+
+Donc je trouve une façon moi même de compute le dice score 
+
+Live debug de : 
+get_statistic_socre_on_dataset(data_path)
+qui devrait marcher sur juste 2 sujets mais à date 
+
+Ça marche!! ça a pris <1 minute pour 2 sujets et mon ordi a un peu alumé la fan 
 
 3 / 25 / 26 
 
@@ -59,7 +80,15 @@ Download le checkpoint de l'élève :
 
 Recherche du checkpoint de SAM : 
 Trouvé ici https://github.com/facebookresearch/segment-anything/blob/main/README.md
-Dans le read me 
+Dans le read me section modelcheckpoints, celui pour le vit-b based on the code 
+
+Réussi à download et faire les prochaines cellules 
+
+ISSUE : device = 'cuda:0'
+Selon ce que j'ai compris c'est pour un device 
+Quand PyTorch charge un modèle, chaque poids du réseau est stocké quelque part — soit dans la mémoire du CPU, soit dans la mémoire du GPU. Si le modèle est sur le GPU mais ta machine n'en a pas, ça plante — c'est exactement l'erreur que tu avais :
+Attempting to deserialize object on a CUDA device but 
+torch.cuda.is_available() is False
 
 
 3/4/25 
