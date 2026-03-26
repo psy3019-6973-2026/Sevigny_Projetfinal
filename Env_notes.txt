@@ -20,6 +20,7 @@ Nom : env_intial
 
 À ajouter : 
 
+- seaborn
 - nibabel 
 - ipywidgets
 conda install x a marché pour ces 2 la 
