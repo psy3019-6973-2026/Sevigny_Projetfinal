@@ -42,6 +42,8 @@ Successfully installed segment-anything-1.0
   - pip
   - pip:
       - segment-anything
+      - scikit-image
+
 
 - scikit-image
 

@@ -8,6 +8,13 @@ QUESTIONS :
 X Les données initiales pas accessible car concours terminé NVM
 - Pour la tâche de reproduction de notebook, on s'attend à quoi?
 
+3 / 28 / 26 
+
+Prédiction SAM : 15 s / image 
+Prédiction fine tuned : 15 s / image
+
+Fait un fichier complet d'environnement qui combine celui initial aux ajouts que j'ai du faire, et le notebook run au complet donc succès! 
+
 3 / 26 / 26 
 
 Maintenant je suis rendue à faire run la loop, je l'essaye sur 2 participants 
