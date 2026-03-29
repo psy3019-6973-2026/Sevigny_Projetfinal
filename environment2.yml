@@ -1,0 +1,22 @@
+name: env_projet
+channels:
+-   conda-forge
+-   defaults
+
+dependencies:
+  - python=3.12
+  - numpy
+  - matplotlib
+  - tqdm
+  - pytorch
+  - torchvision
+  - torchaudio
+  - monai
+  - pip
+  - seaborn
+  - nibabel
+  - ipywidgets
+  - ipykernel
+  - pip:
+      - segment-anything
+      - scikit-image
