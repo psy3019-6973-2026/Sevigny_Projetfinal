@@ -1,19 +1,56 @@
 Notes de ma progression sur le projet : 
 
 TODO : 
-- Download la grosse base de données 
+X Download la grosse base de données 
 
 QUESTIONS : 
 
 X Les données initiales pas accessible car concours terminé NVM
 - Pour la tâche de reproduction de notebook, on s'attend à quoi?
 
+TACHE 1 
+
+- Env final 
+- Regarder le tutoriel / docker de la prof 
+
+TACHE 2 
+
+X Rouler boucle test sur 2 participants avec la bonne configuration 
+- Rouler sur tout le monde 
+- Update des stats 
+- Recherche sur autres méthodes d'évaluation 
+
+7 / 4 / 26
+
+Changé la boucle statistiques en fixant des issues (bbox surtout) voir le word et en mettant les resultats dans un dictionnaire au lieu d'une [] pour que ça soit plus facile à ouvrir et faire des stats 
+
+Plein de bogues avec les fonctions mais j'ai reussi à clarifier
+
+Commencé la visu à mis chemin environ 
+
+3 / 4 / 26
+
+import pickle
+Fait la boucle qui sort tous les éléments de stats pour tous les sujets, au lieu de faire la mesure à l'intérieur de la boucle 
+
+3 / 31 / 26 
+
+Download du gros dataset 
+J'ai du conda install Kaggle donc ajouter au venv? 
+
+Fait un peu d'espace : 
+(base) cassa2@DESKTOP-R035LH9:~/psy3019/projet/data_full$ rm */*_flair.nii.gz
+(base) cassa2@DESKTOP-R035LH9:~/psy3019/projet/data_full$ rm */*_t1.nii.gz
+(base) cassa2@DESKTOP-R035LH9:~/psy3019/projet/data_full$ rm */*_t1ce.nii.gz
+
 3 / 28 / 26 
 
 Prédiction SAM : 15 s / image 
 Prédiction fine tuned : 15 s / image
 
-Fait un fichier complet d'environnement qui combine celui initial aux ajouts que j'ai du faire, et le notebook run au complet donc succès! 
+Fait un fichier complet d'environnement qui combine celui initial aux ajouts que j'ai du faire, et le notebook run au complet donc succès!
+
+Pour la loop 1 min 5 pour 2 sujets 
 
 3 / 26 / 26 
 
