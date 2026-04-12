@@ -89,11 +89,8 @@ def visualize_3d_gt(layer, gt_data):
     plt.axis('off')
     return layer
 
-def visualisation_seg_gt(scan_2d, gt_2d) :
-    '''
-    Du bcp changer pcq interact est seulement dans notebook 
-    '''
-    _, axs = plt.subplots(1, 2, figsize=(25, 10))
+def visualisation_seg_gt(scan_2d, gt_2d):
+    fig, axs = plt.subplots(1, 2, figsize=(25, 10))
     
     axs[0].imshow(scan_2d, cmap='gray')
     axs[0].set_title('Scan')
@@ -103,10 +100,9 @@ def visualisation_seg_gt(scan_2d, gt_2d) :
     axs[1].set_title('GT')
     axs[1].axis('off')
     
-    plt.tight_layout()
-    plt.savefig('figure_scan_gt.png', dpi=150)
-    plt.show()
-    plt.close()
+    fig.tight_layout()
+    
+    return fig
 
 def initialisation_modeles() : 
     model_type = 'vit_b'
@@ -337,3 +333,20 @@ def get_statistic_socre_on_dataset(data_path):
     print(f"Résultats sauvegardés dans : {output_path}")
 
     return results
+
+def save_figure_gt(results_load, sujet, save_dir="."):
+
+    if sujet not in results_load:
+        raise ValueError(f"Sujet {sujet} non trouvé dans results")
+
+    image = results_load[sujet]["image"]
+    gt = results_load[sujet]["gt"]
+
+    fig = visualisation_seg_gt(image, gt)
+
+    filepath = os.path.join(save_dir, f"figure_gt_{sujet}.png")
+
+    fig.savefig(filepath, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+
+    print(f"Figure sauvegardée : {filepath}")

@@ -1,8 +1,5 @@
 Notes de ma progression sur le projet : 
 
-TODO : 
-X Download la grosse base de données 
-
 QUESTIONS : 
 
 X Les données initiales pas accessible car concours terminé NVM
@@ -10,8 +7,7 @@ X Les données initiales pas accessible car concours terminé NVM
 
 TACHE 1 
 
-- Env final 
-- Regarder le tutoriel / docker de la prof 
+
 
 TACHE 2 
 
@@ -19,6 +15,19 @@ X Rouler boucle test sur 2 participants avec la bonne configuration
 - Rouler sur tout le monde 
 - Update des stats 
 - Recherche sur autres méthodes d'évaluation 
+- Faire des beaux graphiques 
+
+4 / 9 / 26 
+
+J'essaye de tout mettre en fonction, j'ai créé fonction.py ou je mets toutes celles que j'ai à date 
+
+Je vais faire un script qui fait l'analyse pour la boucle à partir de fonctions seulement 
+
+J'ai flowstate ca va super bien 
+
+4 / 11 / 26 
+
+Travaillé sur le notebook qui fait des stats, fait des recherches sur potentielles autres métriques 
 
 7 / 4 / 26
 

@@ -51,8 +51,10 @@ scan_2d = fc.sam_imput_format(scan_2d_og)
 
 # Figure partielle - jsp si je veux 
 # TO DO faire mieux pour sauvegarder dans la fonction, comme visu finale 
-#figure = fc.visualisation_seg_gt(scan_2d_og, gt_2d)
-#plt.savefig(f'Segmentation_originale.png', dpi=150)
+figure = fc.visualisation_seg_gt(scan_2d_og, gt_2d)
+plt.savefig(f'./figures/Segmentation_originale.png', dpi=150)
+
+'''
 
 # Load des modèles
 sam_predictor, med_sam_predictor, med_sam_model = fc.initialisation_modeles()
@@ -72,3 +74,4 @@ sam_dsc = fc.compute_dice_coefficient(gt_2d, sam_seg)
 medsam_dsc = fc.compute_dice_coefficient(gt_2d, medsam_seg)
 
 fc.visualisation_resultats(scan_2d_og, gt_2d, sam_seg, medsam_seg, gt_box, sam_dsc, medsam_dsc, save_path='figure_finale.png')
+'''
