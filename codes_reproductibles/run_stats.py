@@ -45,6 +45,4 @@ def ajouter_stats_tableau(tableau, results_load) :
     return tableau
 
 
-def ajouter_colone_dice(tableau, results_load):
-
-    
+#def ajouter_colone_dice(tableau, results_load):
