@@ -539,7 +539,9 @@ def save_figure_complete(results_load, tableau_metriques, sujet, save_dir="."):
 
     print(f"Figure sauvegardée : {filepath}")
 
-def figure_comparaison_dice(tableau_resultat, save_dir="./visualisations"):
+### Visu stats 
+
+def figure_comparaison_dice(tableau_resultat, save_dir="./figures"):
     
     couleurs = {'SAM': '#378ADD', 'MedSAM': '#D85A30'}
 
@@ -621,6 +623,151 @@ def figure_comparaison_dice(tableau_resultat, save_dir="./visualisations"):
     plt.close(fig)
     print(f"Figure sauvegardée : {filepath}")
 
+def figure_dice(df_long, save_dir="./figures") : 
+    fig, ax = plt.subplots(figsize=(5, 5))
+
+    modeles = ['SAM', 'MedSAM']
+    couleurs = {'SAM': '#378ADD', 'MedSAM': '#D85A30'}
+
+    # --- Boxplot avec transparence via boxprops ---
+    for i, modele in enumerate(modeles):
+        vals = df_long[df_long['modele'] == modele][['modele', 'dice']]
+        bp = ax.boxplot(
+            vals['dice'],
+            positions=[i],
+            widths=0.5,
+            patch_artist=True,
+            medianprops=dict(color='black', linewidth=1.5),
+            whiskerprops=dict(color=couleurs[modele], linewidth=1.5),
+            capprops=dict(color=couleurs[modele], linewidth=1.5),
+            boxprops=dict(facecolor=couleurs[modele] + '40',   # '40' ≈ 25% opacité
+                        edgecolor=couleurs[modele], linewidth=1.5),
+            flierprops=dict(marker=''),
+            showfliers=False
+        )
+
+        # Ligne de moyenne tiretée
+        mu = vals['dice'].mean()
+        ax.hlines(mu, i - 0.25, i + 0.25,
+                colors=couleurs[modele], linewidths=1.5,
+                linestyles='--', zorder=5)
+
+    # --- Points décalés à droite ---
+    ''
+    for i, modele in enumerate(modeles):
+        vals = df_long[df_long['modele'] == modele]['dice']
+        x = np.random.normal(i, 0.04, size=len(vals))
+        ax.scatter(x, vals, color=couleurs[modele], alpha=0.6, s=18, zorder=3)
+
+    # --- Annotations μ ± σ ---
+    for i, modele in enumerate(modeles):
+        vals = df_long[df_long['modele'] == modele]['dice']
+        mu, sigma = vals.mean(), vals.std()
+        ax.annotate(
+            f'M={mu:.2f} ± {sigma:.2f}',
+            xy=(i, 0.02), ha='center', va='bottom',
+            fontsize=9, color=couleurs[modele], fontstyle='italic'
+        )
+
+    ax.set_xticks([0, 1])
+    ax.set_xticklabels(['SAM', 'MedSAM'], fontsize=12)
+    ax.set_ylabel('Dice', fontsize=12)
+    ax.set_xlabel('')
+    ax.set_ylim(-0.07, 1)
+    ax.yaxis.set_tick_params(labelsize=11)
+
+    ax.yaxis.grid(True, linestyle='--', alpha=0.5, color='gray')
+    ax.set_axisbelow(True)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+
+    plt.title('Dice score — SAM vs MedSAM', fontsize=12, pad=20, fontweight='bold')
+    plt.tight_layout()
+    
+    filepath = os.path.join(save_dir, "boxplot_dice.png")
+    fig.savefig(filepath, dpi=300, bbox_inches='tight')
+    print('Boxplot_sauvegardé')
+
+def figure_precision_recall(df_long, save_dir = './figures') :
+    fig, ax = plt.subplots(figsize=(6, 5))
+
+    df_pr = df_long.melt(id_vars='modele', value_vars=['precision', 'recall'],
+                        var_name='metrique', value_name='valeur')
+
+    sns.boxplot(data=df_pr, x='metrique', y='valeur', hue='modele',
+                palette={'SAM': '#378ADD', 'MedSAM': '#D85A30'},
+                fill=False, linewidth=1.5, fliersize=0, ax=ax)
+
+    sns.stripplot(data=df_pr, x='metrique', y='valeur', hue='modele',
+                palette={'SAM': '#378ADD', 'MedSAM': '#D85A30'},
+                alpha=0.7, jitter=True, dodge=True, legend=False,
+                size=5, ax=ax)
+
+    ax.set_xlabel('')
+    ax.set_ylabel('Score', fontsize=12)
+    ax.set_xticklabels(['Precision', 'Recall'], fontsize=12)
+    ax.set_ylim(0, 1)
+    ax.set_title('Mesure de Précision et Recall pour Med-sam et sam', fontsize=12, loc='center', pad=20, fontweight='bold')
+    ax.yaxis.set_tick_params(labelsize=8)
+
+    # Grille discrète
+    ax.yaxis.grid(True, linestyle='--', alpha=0.5, color='gray')
+    ax.set_axisbelow(True)
+
+    # Bordures
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+
+    # Légende
+    ax.legend(title='Modèles :', fontsize=11, frameon=False)
+    legend = ax.legend(title='Modèles :', fontsize=11, frameon=False)
+    legend.get_title().set_horizontalalignment('left')
+
+    plt.savefig('./figures/boxplot_precision_recall.png', dpi=300, bbox_inches='tight')
+    print('precision_recall sauvegardé')
+    #plt.show()
+    #plt.close()
+
+def figure_2_variables(df_long, variable1, variable2, save_dir = './figures') :
+    fig, ax = plt.subplots(figsize=(6, 5))
+
+    df_pr = df_long.melt(id_vars='modele', value_vars=[variable1, variable2],
+                        var_name='metrique', value_name='valeur')
+
+    sns.boxplot(data=df_pr, x='metrique', y='valeur', hue='modele',
+                palette={'SAM': '#378ADD', 'MedSAM': '#D85A30'},
+                fill=False, linewidth=1.5, fliersize=0, ax=ax)
+
+    sns.stripplot(data=df_pr, x='metrique', y='valeur', hue='modele',
+                palette={'SAM': '#378ADD', 'MedSAM': '#D85A30'},
+                alpha=0.7, jitter=True, dodge=True, legend=False,
+                size=5, ax=ax)
+
+    ax.set_xlabel('')
+    ax.set_ylabel('Score', fontsize=12)
+    ax.set_xticklabels([variable1, variable2], fontsize=12)
+    # ax.set_ylim(0, 1)
+    ax.set_title(f'Mesure de {variable1} et {variable2} pour Med-sam et sam', fontsize=12, loc='center', pad=20, fontweight='bold')
+    ax.yaxis.set_tick_params(labelsize=8)
+
+    # Grille discrète
+    ax.yaxis.grid(True, linestyle='--', alpha=0.5, color='gray')
+    ax.set_axisbelow(True)
+
+    # Bordures
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+
+    # Légende
+    ax.legend(title='Modèles :', fontsize=11, frameon=False)
+    legend = ax.legend(title='Modèles :', fontsize=11, frameon=False)
+    legend.get_title().set_horizontalalignment('left')
+
+    plt.savefig(f'./figures/boxplot_{variable1}_{variable2}.png', dpi=300, bbox_inches='tight')
+    print(f'{variable1, variable2} sauvegardé')
+    #plt.show()
+    #plt.close()
+
 ### STATISTIQUES
 # Toujours gt, pred
 
@@ -688,8 +835,17 @@ def compute_avg_surf_dist(mask_gt, mask_pred, voxel_spacing=None):
 
     sampling = voxel_spacing if voxel_spacing is not None else tuple([1.0] * mask_gt.ndim)
 
-    dist_pred_to_gt = distance_transform_edt(~mask_gt,   sampling=sampling)[mask_pred]
-    dist_gt_to_pred = distance_transform_edt(~mask_pred, sampling=sampling)[mask_gt]
+    # Gets only the surface voxels 
+    surf_gt = mask_gt ^ binary_erosion(mask_gt)
+    surf_pred = mask_pred ^ binary_erosion(mask_pred)
+
+    # distance maps
+    dt_gt = distance_transform_edt(~mask_gt, sampling=sampling)
+    dt_pred = distance_transform_edt(~mask_pred, sampling=sampling)
+
+    # distances surface → surface
+    dist_pred_to_gt = dt_gt[surf_pred]
+    dist_gt_to_pred = dt_pred[surf_gt]
 
     return dist_pred_to_gt.mean(), dist_gt_to_pred.mean()
 

@@ -6,35 +6,85 @@ from matplotlib.patches import Patch
 import fonctions as fc
 
 tableau_resultat = pd.read_csv('./resultats/resultats_tableau.csv', index_col=0)
-print(tableau_resultat.columns)
+#print(tableau_resultat)
 
 # Mettre dans le bon format
-df_sam = tableau_resultat[['sam_dice', 'sam_precision', 'sam_recall', 'sam_HD100', 'sam_AVG_seg2gt', 'sam_AVG_gt2seg']].copy()
-df_sam.columns = ['dice', 'precision', 'recall', 'HD100', 'AVG_seg2gt', 'AVG_gt2seg']
+df_sam = tableau_resultat[['sam_dice', 'sam_precision', 'sam_recall', 'sam_HD100']].copy()
+df_sam.columns = ['dice', 'precision', 'recall', 'HD100']
 df_sam['modele'] = 'SAM'
 
-df_medsam = tableau_resultat[['medsam_dice', 'medsam_precision', 'medsam_recall', 'medsam_HD100', 'medsam_AVG_seg2gt', 'medsam_AVG_gt2seg']].copy()
-df_medsam.columns = ['dice', 'precision', 'recall', 'HD100', 'AVG_seg2gt', 'AVG_gt2seg']
+df_medsam = tableau_resultat[['medsam_dice', 'medsam_precision', 'medsam_recall', 'medsam_HD100']].copy()
+df_medsam.columns = ['dice', 'precision', 'recall', 'HD100']
 df_medsam['modele'] = 'MedSAM'
 
 df_long = pd.concat([df_sam, df_medsam])
 
-print(df_long.columns)
-
 # Figure 1 : Dice 
-#fc.figure_dice(df_long)
 
-# Figure 2 : Precision, recall 
-#fc.figure_2_variables(df_long, 'precision', 'recall')
+fig, ax = plt.subplots(figsize=(5, 5))
 
-# Figure 4 : comparaison entre modèles 
-#fc.figure_comparaison_dice(tableau_resultat, save_dir='./figures')
+modeles = ['SAM', 'MedSAM']
+couleurs = {'SAM': '#378ADD', 'MedSAM': '#D85A30'}
 
-# Figure 4 : AVG surface dist 
-fc.figure_2_variables(df_long, 'AVG_seg2gt', 'AVG_gt2seg')
+# --- Boxplot avec transparence via boxprops ---
+for i, modele in enumerate(modeles):
+    vals = df_long[df_long['modele'] == modele][['modele', 'dice']]
+    bp = ax.boxplot(
+        vals['dice'],
+        positions=[i],
+        widths=0.5,
+        patch_artist=True,
+        medianprops=dict(color='black', linewidth=1.5),
+        whiskerprops=dict(color=couleurs[modele], linewidth=1.5),
+        capprops=dict(color=couleurs[modele], linewidth=1.5),
+        boxprops=dict(facecolor=couleurs[modele] + '40',   # '40' ≈ 25% opacité
+                      edgecolor=couleurs[modele], linewidth=1.5),
+        flierprops=dict(marker=''),
+        showfliers=False
+    )
 
+    # Ligne de moyenne tiretée
+    mu = vals['dice'].mean()
+    ax.hlines(mu, i - 0.25, i + 0.25,
+              colors=couleurs[modele], linewidths=1.5,
+              linestyles='--', zorder=5)
 
-'''
+# --- Points décalés à droite ---
+''
+for i, modele in enumerate(modeles):
+    vals = df_long[df_long['modele'] == modele]['dice']
+    x = np.random.normal(i, 0.04, size=len(vals))
+    ax.scatter(x, vals, color=couleurs[modele], alpha=0.6, s=18, zorder=3)
+
+# --- Annotations μ ± σ ---
+for i, modele in enumerate(modeles):
+    vals = df_long[df_long['modele'] == modele]['dice']
+    mu, sigma = vals.mean(), vals.std()
+    ax.annotate(
+        f'M={mu:.2f} ± {sigma:.2f}',
+        xy=(i, 0.02), ha='center', va='bottom',
+        fontsize=9, color=couleurs[modele], fontstyle='italic'
+    )
+
+ax.set_xticks([0, 1])
+ax.set_xticklabels(['SAM', 'MedSAM'], fontsize=12)
+ax.set_ylabel('Dice', fontsize=12)
+ax.set_xlabel('')
+ax.set_ylim(-0.07, 1)
+ax.yaxis.set_tick_params(labelsize=11)
+
+ax.yaxis.grid(True, linestyle='--', alpha=0.5, color='gray')
+ax.set_axisbelow(True)
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+
+plt.title('Dice score — SAM vs MedSAM', fontsize=12, pad=20, fontweight='bold')
+plt.tight_layout()
+plt.savefig('./figures/boxplot_dice.png', dpi=300, bbox_inches='tight')
+print('Boxplot_sauvegardé')
+# plt.show()
+plt.close()
+
 # Figure 2 : 
 
 fig, ax = plt.subplots(figsize=(6, 5))
@@ -147,4 +197,3 @@ fc.figure_comparaison_dice(tableau_resultat, save_dir='./figures')
 
 # Figure 5 : AVSD 
 
-'''

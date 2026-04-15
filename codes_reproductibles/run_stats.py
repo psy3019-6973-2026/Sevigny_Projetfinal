@@ -54,16 +54,22 @@ for sujet in tableau_resultat.index:
     HD100_medsam = fc.compute_hd100(gt > 0, medsam_seg > 0)
 
     # Ajout colone Average Surface Distance
+    AVG_seg2gt_sam, AVG_gt2seg_sam = fc.compute_avg_surf_dist(gt > 0, sam_seg > 0)
+    AVG_seg2gt_medsam, AVG_gt2seg_medsam = fc.compute_avg_surf_dist(gt > 0, medsam_seg > 0)
 
     tableau_resultat.loc[sujet, "sam_dice"] = sam_dsc
     tableau_resultat.loc[sujet, "sam_precision"] = precision_sam
     tableau_resultat.loc[sujet, "sam_recall"] = recall_sam
     tableau_resultat.loc[sujet, "sam_HD100"] = HD100_sam
+    tableau_resultat.loc[sujet, "sam_AVG_seg2gt"] = AVG_seg2gt_sam
+    tableau_resultat.loc[sujet, "sam_AVG_gt2seg"] = AVG_gt2seg_sam
 
     tableau_resultat.loc[sujet, "medsam_dice"] = medsam_dsc
     tableau_resultat.loc[sujet, "medsam_precision"] = precision_medsam
     tableau_resultat.loc[sujet, "medsam_recall"] = recall_medsam
     tableau_resultat.loc[sujet, "medsam_HD100"] = HD100_medsam
+    tableau_resultat.loc[sujet, "medsam_AVG_seg2gt"] = AVG_seg2gt_medsam
+    tableau_resultat.loc[sujet, "medsam_AVG_gt2seg"] = AVG_gt2seg_medsam
 
 print(tableau_resultat.columns)
 tableau_resultat.to_csv('./resultats/resultats_tableau.csv', index=True)
