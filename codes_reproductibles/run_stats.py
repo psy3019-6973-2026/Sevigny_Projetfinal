@@ -49,8 +49,11 @@ for sujet in tableau_resultat.index:
     
     #print(gt.shape, sam_seg.shape)
 
+    # Ajout colone HD100 
     HD100_sam = fc.compute_hd100(gt > 0, sam_seg > 0)
     HD100_medsam = fc.compute_hd100(gt > 0, medsam_seg > 0)
+
+    # Ajout colone Average Surface Distance
 
     tableau_resultat.loc[sujet, "sam_dice"] = sam_dsc
     tableau_resultat.loc[sujet, "sam_precision"] = precision_sam

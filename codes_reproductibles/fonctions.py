@@ -23,7 +23,8 @@ import seaborn as sns
 import pickle
 import pandas as pd # Ajouté pour les stats
 from ipywidgets import interact
-from scipy.ndimage import distance_transform_edt
+from scipy.ndimage import distance_transform_edt, binary_erosion
+import matplotlib.lines as mlines
 
 
 # set seeds
@@ -430,7 +431,6 @@ def save_figure_gt(results_load, sujet, save_dir="."):
 
     print(f"Figure sauvegardée : {filepath}")
 
-
 def save_figure_resultats(results_load, tableau_metriques, sujet, save_dir="."):
 
     if sujet not in results_load:
@@ -463,6 +463,163 @@ def save_figure_resultats(results_load, tableau_metriques, sujet, save_dir="."):
 
     print(f"Figure sauvegardée : {filepath}")
 
+def show_mask(mask, ax, random_color=False):
+    if random_color:
+        color = np.concatenate([np.random.random(3), np.array([0.6])], axis=0)
+    else:
+        color = np.array([251/255, 252/255, 30/255, 0.6])
+    h, w = mask.shape[-2:]
+    mask_image = mask.reshape(h, w, 1) * color.reshape(1, 1, -1)
+    ax.imshow(mask_image)
+
+def show_box(box, ax):
+    x0, y0 = box[0], box[1]
+    w, h = box[2] - box[0], box[3] - box[1]
+    ax.add_patch(plt.Rectangle((x0, y0), w, h, edgecolor='blue', facecolor=(0,0,0,0), lw=2))
+
+def figure_complete(scan, gt, medsam_seg, sam_seg, bbox_raw, sam_dsc, medsam_dsc):
+
+    fig, axs = plt.subplots(2, 2, figsize=(20, 20))
+
+    # Scan original
+    axs[0, 0].imshow(scan, cmap='gray')
+    axs[0, 0].set_title('Scan')
+    axs[0, 0].axis('off')
+
+    # Scan + GT
+    axs[0, 1].imshow(scan)
+    show_mask(gt > 0, axs[0, 1])          # ← axs[0, 1] au lieu de axs[0]
+    axs[0, 1].axis('off')
+    axs[0, 1].set_title('GT')
+    axs[0, 1].text(0.5, 0.5, 'Ground Truth', fontsize=30,
+                   horizontalalignment='left', verticalalignment='top', color='yellow')
+
+    # SAM seg
+    axs[1, 0].imshow(scan)                # ← axs[1, 0] pour le 3e panneau
+    show_mask(sam_seg, axs[1, 0])         # ← axs[1, 0] au lieu de axs[1]
+    show_box(bbox_raw, axs[1, 0])
+    axs[1, 0].text(0.5, 0.5, 'SAM DSC: {:.4f}'.format(sam_dsc), fontsize=30,
+                   horizontalalignment='left', verticalalignment='top', color='yellow')
+    axs[1, 0].axis('off')
+
+    # MedSAM seg
+    axs[1, 1].imshow(scan)                # ← axs[1, 1] au lieu de axs[1, 2]
+    show_mask(medsam_seg, axs[1, 1])      # ← axs[1, 1] au lieu de axs[2]
+    show_box(bbox_raw, axs[1, 1])
+    axs[1, 1].text(0.5, 0.5, 'MedSAM DSC: {:.4f}'.format(medsam_dsc), fontsize=30,
+                   horizontalalignment='left', verticalalignment='top', color='yellow')
+    axs[1, 1].axis('off')
+
+    fig.tight_layout()
+
+    return fig
+
+def save_figure_complete(results_load, tableau_metriques, sujet, save_dir="."):
+
+    if sujet not in results_load:
+        raise ValueError(f"Sujet {sujet} non trouvé dans results")
+
+    data = results_load[sujet]
+
+    image     = data["image"]
+    gt        = data["gt"]
+    sam_seg   = data["sam_seg"]
+    medsam_seg = data["medsam_seg"]
+
+    # Recalcule les métriques depuis les segmentations stockées
+    bbox_raw  = get_bbox_from_mask(gt)
+    sam_dsc = tableau_metriques.loc[sujet, 'sam_dice']
+    medsam_dsc = tableau_metriques.loc[sujet, 'medsam_dice']
+
+    fig = figure_complete(image, gt, medsam_seg, sam_seg, bbox_raw, sam_dsc, medsam_dsc)
+
+    filepath = os.path.join(save_dir, f"figure_resultats_{sujet}.png")
+    fig.savefig(filepath, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+
+    print(f"Figure sauvegardée : {filepath}")
+
+def figure_comparaison_dice(tableau_resultat, save_dir="./visualisations"):
+    
+    couleurs = {'SAM': '#378ADD', 'MedSAM': '#D85A30'}
+
+    diff = tableau_resultat['medsam_dice'] - tableau_resultat['sam_dice']
+    subjects = tableau_resultat.index.tolist()
+    
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
+
+    # ── Parallel coordinates ──────────────────────────────────────────────────
+    for subj in subjects:
+        sam_val    = tableau_resultat.loc[subj, 'sam_dice']
+        medsam_val = tableau_resultat.loc[subj, 'medsam_dice']
+        d = medsam_val - sam_val
+        color  = '#D85A30' if d > 0 else '#378ADD'   # MedSAM better → coral, SAM better → blue
+        alpha  = 0.3 + 0.6 * abs(d)                  # bigger difference = more opaque
+        ax1.plot([0, 1], [sam_val, medsam_val],
+                 color=color, alpha=alpha, linewidth=1.2, zorder=2)
+
+    # Means
+    mu_sam    = tableau_resultat['sam_dice'].mean()
+    mu_medsam = tableau_resultat['medsam_dice'].mean()
+    ax1.plot([0, 1], [mu_sam, mu_medsam],
+             color='black', linewidth=2.5, linestyle='--', zorder=5, label='Moyenne')
+    ax1.scatter([0, 1], [mu_sam, mu_medsam],
+                color='black', s=60, zorder=6)
+
+    ax1.set_xticks([0, 1])
+    ax1.set_xticklabels(['SAM', 'MedSAM'], fontsize=13)
+    ax1.set_ylabel('Dice', fontsize=12)
+    ax1.set_ylim(-0.05, 1.05)
+    ax1.yaxis.grid(True, linestyle='--', alpha=0.4, color='gray')
+    ax1.set_axisbelow(True)
+    ax1.spines['top'].set_visible(False)
+    ax1.spines['right'].set_visible(False)
+    ax1.set_title('Parallel coordinates — Dice par sujet', fontsize=12,
+                  fontweight='bold', pad=12)
+
+    legend_elems = [
+        mlines.Line2D([], [], color='#D85A30', linewidth=1.5, label='MedSAM meilleur'),
+        mlines.Line2D([], [], color='#378ADD', linewidth=1.5, label='SAM meilleur'),
+        mlines.Line2D([], [], color='black',   linewidth=2,   linestyle='--', label='Moyenne'),
+    ]
+    ax1.legend(handles=legend_elems, fontsize=9, frameon=False, loc='lower right')
+
+    # ── Lollipop — MedSAM − SAM ───────────────────────────────────────────────
+    order   = diff.sort_values().index          # sort by difference
+    y_pos   = np.arange(len(order))
+    diff_sorted = diff[order]
+
+    for i, (subj, val) in enumerate(diff_sorted.items()):
+        color = '#D85A30' if val > 0 else '#378ADD'
+        ax2.plot([0, val], [i, i], color=color, linewidth=1.4, zorder=2)
+        ax2.scatter(val, i, color=color, s=45, zorder=3)
+
+    ax2.axvline(0, color='black', linewidth=0.8, linestyle='-', zorder=1)
+
+    ax2.set_yticks(y_pos)
+    ax2.set_yticklabels(order, fontsize=8)
+    ax2.set_xlabel('Δ Dice  (MedSAM − SAM)', fontsize=11)
+    ax2.xaxis.grid(True, linestyle='--', alpha=0.4, color='gray')
+    ax2.set_axisbelow(True)
+    ax2.spines['top'].set_visible(False)
+    ax2.spines['right'].set_visible(False)
+    ax2.set_title('Lollipop — différence Dice par sujet', fontsize=12,
+                  fontweight='bold', pad=12)
+
+    legend_elems2 = [
+        mlines.Line2D([], [], color='#D85A30', linewidth=1.5,
+                      marker='o', markersize=5, label='MedSAM meilleur (Δ > 0)'),
+        mlines.Line2D([], [], color='#378ADD', linewidth=1.5,
+                      marker='o', markersize=5, label='SAM meilleur (Δ < 0)'),
+    ]
+    ax2.legend(handles=legend_elems2, fontsize=9, frameon=False, loc='lower right')
+
+    fig.tight_layout()
+
+    filepath = os.path.join(save_dir, "figure_comparaison_dice.png")
+    fig.savefig(filepath, dpi=300, bbox_inches='tight')
+    plt.close(fig)
+    print(f"Figure sauvegardée : {filepath}")
 
 ### STATISTIQUES
 # Toujours gt, pred
@@ -509,7 +666,31 @@ def compute_hd100(mask_gt, mask_pred, voxel_spacing=None):
 
     sampling = voxel_spacing if voxel_spacing is not None else tuple([1.0] * mask_gt.ndim)
 
+    surf_gt = mask_gt ^ binary_erosion(mask_gt)
+    surf_pred = mask_pred ^ binary_erosion(mask_pred)
+
+    dt_gt = distance_transform_edt(~mask_gt, sampling=sampling)
+    dt_pred = distance_transform_edt(~mask_pred, sampling=sampling)
+
+    dist_pred_to_gt = dt_gt[surf_pred]
+    dist_gt_to_pred = dt_pred[surf_gt]
+
+    return float(max(dist_pred_to_gt.max(), dist_gt_to_pred.max()))
+
+def compute_avg_surf_dist(mask_gt, mask_pred, voxel_spacing=None):
+    print(mask_gt.shape, mask_pred.shape)
+    
+    mask_gt   = mask_gt.astype(bool)
+    mask_pred = mask_pred.astype(bool)
+
+    if mask_pred.sum() == 0 or mask_gt.sum() == 0:
+        return float("nan")
+
+    sampling = voxel_spacing if voxel_spacing is not None else tuple([1.0] * mask_gt.ndim)
+
     dist_pred_to_gt = distance_transform_edt(~mask_gt,   sampling=sampling)[mask_pred]
     dist_gt_to_pred = distance_transform_edt(~mask_pred, sampling=sampling)[mask_gt]
 
-    return float(max(dist_pred_to_gt.max(), dist_gt_to_pred.max()))
+    return dist_pred_to_gt.mean(), dist_gt_to_pred.mean()
+
+#mean( d(p, S_gt) ) pour p ∈ S_pred + d(q, S_pred) pour q ∈ S_gt
