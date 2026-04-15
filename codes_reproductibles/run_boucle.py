@@ -31,7 +31,7 @@ tableau de données statistiques
 
 # Boucle avec la bonne structure, qui produit un dt : 
 
-results = fc.get_statistic_socre_on_dataset("../data_test")
+results = fc.get_statistic_socre_on_dataset("../data_test2")
 
-#with open("results.pkl", "wb") as f:
-#    pickle.dump(results, f)
+with open("results.pkl", "wb") as f:
+    pickle.dump(results, f)

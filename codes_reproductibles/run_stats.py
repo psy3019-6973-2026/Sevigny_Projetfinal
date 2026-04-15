@@ -22,27 +22,46 @@ import pickle
 import pandas as pd # Ajouté pour les stats
 import fonctions as fc
 
-with open("results.pkl", "rb") as f:
+with open("./resultats/results_test.pkl", "rb") as f:
     results_load = pickle.load(f)
 
-print(list(results_load.keys()))  # les sujets
-print(list(next(iter(results_load.values())).keys()))  # les variables
+# Création du tableau initial 
+tableau_resultat = pd.DataFrame(index=results_load.keys())
+tableau_resultat["slice_index"] = [results_load[s]["slice_index"] for s in results_load]
 
-def ajouter_stats_tableau(tableau, results_load) :
-    for sujet in tableau.index:
+for sujet in tableau_resultat.index:
 
-        sam_seg = results_load[sujet]['sam_seg']
-        medsam_seg = results_load[sujet]['medsam_seg']
-        gt = results_load[sujet]['gt']
+    sam_seg = results_load[sujet]['sam_seg']
+    medsam_seg = results_load[sujet]['medsam_seg']
+    gt = results_load[sujet]['gt']
 
-        # Ajout colone dice score 
-        sam_dsc = fc.compute_dice_coefficient(gt > 0, sam_seg > 0)
-        medsam_dsc = fc.compute_dice_coefficient(gt > 0, medsam_seg > 0)
+    # Enlève les dimmensions de 1 retournés par les modèles (nb images traités en mê temps)
+    sam_seg = sam_seg.squeeze()
+    medsam_seg = medsam_seg.squeeze()
 
-        tableau.loc[sujet, "sam_dice"] = sam_dsc
-        tableau.loc[sujet, "medsam_dice"] = medsam_dsc
+    # Ajout colone dice score 
+    sam_dsc = fc.compute_dice_coefficient(gt > 0, sam_seg > 0)
+    medsam_dsc = fc.compute_dice_coefficient(gt > 0, medsam_seg > 0)
 
-    return tableau
+    # Ajout colone precision, recall 
+    precision_sam, recall_sam = fc.precision_recall(gt > 0, sam_seg > 0)
+    precision_medsam, recall_medsam = fc.precision_recall(gt > 0, medsam_seg > 0)
+    
+    #print(gt.shape, sam_seg.shape)
 
+    HD100_sam = fc.compute_hd100(gt > 0, sam_seg > 0)
+    HD100_medsam = fc.compute_hd100(gt > 0, medsam_seg > 0)
 
-#def ajouter_colone_dice(tableau, results_load):
+    tableau_resultat.loc[sujet, "sam_dice"] = sam_dsc
+    tableau_resultat.loc[sujet, "sam_precision"] = precision_sam
+    tableau_resultat.loc[sujet, "sam_recall"] = recall_sam
+    tableau_resultat.loc[sujet, "sam_HD100"] = HD100_sam
+
+    tableau_resultat.loc[sujet, "medsam_dice"] = medsam_dsc
+    tableau_resultat.loc[sujet, "medsam_precision"] = precision_medsam
+    tableau_resultat.loc[sujet, "medsam_recall"] = recall_medsam
+    tableau_resultat.loc[sujet, "medsam_HD100"] = HD100_medsam
+
+print(tableau_resultat.columns)
+tableau_resultat.to_csv('./resultats/resultats_tableau.csv', index=True)
+

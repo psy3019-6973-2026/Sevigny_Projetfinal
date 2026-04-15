@@ -69,6 +69,7 @@ def load_scan_2d(scan_path, gt_path, slice_index) :
 
     return scan_2d,gt_2d
 
+'''
 def verification_slice_tumeur(subject_id, slice_index, image_3d, gt_3d, max_attempts=10):
     
     # Slice initiale
@@ -96,6 +97,30 @@ def verification_slice_tumeur(subject_id, slice_index, image_3d, gt_3d, max_atte
     # Si la slice initiale est déjà valide
     print("Shape gt:", gt.shape)
     return slice_index, image, gt
+'''
+
+def verification_slice_tumeur(subject_id, scan_path, gt_path, slice_index, scan_2d, gt_2d, max_attempts=10):
+
+    if np.sum(gt_2d) > 0:
+        print('Slice initiale fonctionne', slice_index)
+        return slice_index, scan_2d, gt_2d
+
+    # Seulement ici on charge le 3D
+    print(f'Slice initiale sans tumeur ({slice_index}), chargement volume 3D...')
+    scan_obj = nib.load(scan_path)
+    gt_obj = nib.load(gt_path)
+    image_3d = scan_obj.get_fdata()
+    gt_3d = gt_obj.get_fdata()
+
+    for _ in range(max_attempts):
+        new_index = np.random.randint(10,140)
+        new_image, new_gt = get_slice_pair(new_index, image_3d, gt_3d)
+        if np.sum(new_gt) > 0:
+            print(f'Slice trouvée: {new_index}')
+            return new_index, new_image, new_gt
+
+    print(f"Aucune slice valide pour {subject_id}, retour à la slice initiale")
+    return slice_index, scan_2d, gt_2d
 
 ####### Modèles 
 
@@ -216,20 +241,15 @@ def get_statistic_socre_on_dataset(data_path):
             print(f"Fichiers manquants pour {subject_id}, skipping...")
             continue
         
-        # slice_index = np.random.randint(10,140)
-        slice_index = 80 
-        scan_2d_og,gt_2d = load_scan_2d(scan_path, gt_path, slice_index)
-        scan_2d = sam_imput_format(scan_2d_og)
+        slice_index = np.random.randint(10,140)
+        scan_2d_og, gt_2d = load_scan_2d(scan_path, gt_path, slice_index)
 
-        gt_box = get_bbox_from_mask(gt_2d)
+        # Vérifie qu'il y a une tumeur sur la slice originale ou dans 10 autres essais suivant
+        slice_index, scan_2d_og, gt_2d = verification_slice_tumeur(subject_id, scan_path, gt_path, slice_index, scan_2d_og, gt_2d)
         
-        # Vérifie qu'il y a une tumeur sur la slide originale ou dans 10 autres essais suivant
-        # slice_index, image, gt = verification_slice_tumeur(subject_id, slice_index, image_3d, gt_3d)
-        
-        if np.sum(gt_2d) == 0:
-            print(f"Attention: pas de tumeur pour {subject_id}")
+        scan_2d = sam_imput_format(scan_2d_og)  # après la vérification, pas avant
 
-        # Boite qui entoure la segmentation
+        # Obtenir la boite autour de la segmentation 
         gt_box = get_bbox_from_mask(gt_2d)
 
         # Mettre dans le format nécésaire pour les modèles
@@ -250,13 +270,76 @@ def get_statistic_socre_on_dataset(data_path):
     print('boucle terminée :)')
 
     # Sauvegarde 
-    output_path = os.path.join("./results.pkl")
+    output_path = os.path.join("./results/df_results.pkl")
     with open(output_path, "wb") as f:
         pickle.dump(results, f)
 
     print(f"Résultats sauvegardés dans : {output_path}")
 
     return results
+
+def continue_statistic_score_on_dataset(data_path, existing_results_path=None):
+    
+    # Charger un tableau existant ou partir de zéro
+    if existing_results_path is not None and os.path.exists(existing_results_path):
+        with open(existing_results_path, "rb") as f:
+            results = pickle.load(f)
+        print(f"Tableau existant chargé : {len(results)} sujets déjà traités")
+    else:
+        results = {}
+        print("Aucun tableau existant, départ du début")
+
+    sam_predictor, med_sam_predictor, med_sam_model = initialisation_modeles()
+    print('Initialisation terminée')
+
+    for subject_folder in sorted(os.scandir(data_path), key=lambda e: e.name):
+        
+        subject_id = subject_folder.name
+
+        # Skip si déjà traité
+        if subject_id in results:
+            print(f"Sujet {subject_id} déjà présent, skipping...")
+            continue
+
+        print('Commence pour', subject_id)
+
+        scan_path = os.path.join(subject_folder.path, f"{subject_id}_t2.nii.gz")
+        gt_path = os.path.join(subject_folder.path, f"{subject_id}_seg.nii.gz")
+
+        if not os.path.exists(scan_path) or not os.path.exists(gt_path):
+            print(f"Fichiers manquants pour {subject_id}, skipping...")
+            continue
+        
+        slice_index = np.random.randint(10, 140)
+        scan_2d_og, gt_2d = load_scan_2d(scan_path, gt_path, slice_index)
+
+        slice_index, scan_2d_og, gt_2d = verification_slice_tumeur(subject_id, scan_path, gt_path, slice_index, scan_2d_og, gt_2d)
+        
+        scan_2d = sam_imput_format(scan_2d_og)
+        gt_box = get_bbox_from_mask(gt_2d)
+        scan_2d_pre = preprocess_scan(scan_2d)
+
+        sam_seg, medsam_seg = get_2_both_seg_scan(scan_2d_pre, gt_2d, sam_predictor, med_sam_model)
+        print('Segmentation terminée', subject_id)
+
+        results[subject_id] = {
+            "slice_index": slice_index,
+            "image": scan_2d_og,
+            "gt": gt_2d,
+            "sam_seg": sam_seg,
+            "medsam_seg": medsam_seg,
+        }
+
+        # Sauvegarde incrémentale après chaque sujet
+        output_path = existing_results_path if existing_results_path else "./results/df_results.pkl"
+        with open(output_path, "wb") as f:
+            pickle.dump(results, f)
+
+    print(f"Boucle terminée : {len(results)} sujets au total")
+    print(f"Résultats sauvegardés dans : {output_path}")
+
+    return results
+
 
 ###### Visualisations 
 
@@ -347,7 +430,42 @@ def save_figure_gt(results_load, sujet, save_dir="."):
 
     print(f"Figure sauvegardée : {filepath}")
 
+
+def save_figure_resultats(results_load, tableau_metriques, sujet, save_dir="."):
+
+    if sujet not in results_load:
+        raise ValueError(f"Sujet {sujet} non trouvé dans results")
+
+    data = results_load[sujet]
+
+    image     = data["image"]
+    gt        = data["gt"]
+    sam_seg   = data["sam_seg"]
+    medsam_seg = data["medsam_seg"]
+
+    # Recalcule les métriques depuis les segmentations stockées
+    bbox_raw  = get_bbox_from_mask(gt)
+    sam_dsc = tableau_metriques.loc[sujet, 'sam_dice']
+    medsam_dsc = tableau_metriques.loc[sujet, 'medsam_dice']
+
+    filepath = os.path.join(save_dir, f"figure_resultats_{sujet}.png")
+
+    visualisation_resultats(
+        ori_scan_2d=image,
+        gt_2d=gt,
+        sam_seg=sam_seg,
+        medsam_seg=medsam_seg,
+        bbox_raw=bbox_raw,
+        sam_dsc=sam_dsc,
+        medsam_dsc=medsam_dsc,
+        save_path=filepath
+    )
+
+    print(f"Figure sauvegardée : {filepath}")
+
+
 ### STATISTIQUES
+# Toujours gt, pred
 
 def compute_dice_coefficient(mask_gt, mask_pred):
     volume_sum = mask_gt.sum() + mask_pred.sum()  # |A| + |B| → nb de pixels dans chaque masque
@@ -371,8 +489,7 @@ def get_tp_fp_fn(mask_gt, mask_pred):
 
     return tp, fp, fn
 
-
-def precision_recall(pred, gt) :
+def precision_recall(gt, pred) :
     tp, fp, fn = get_tp_fp_fn(pred, gt)
     denom_p = tp + fp
     denom_r = tp + fn
@@ -382,6 +499,8 @@ def precision_recall(pred, gt) :
     return precision, recall
  
 def compute_hd100(mask_gt, mask_pred, voxel_spacing=None):
+    print(mask_gt.shape, mask_pred.shape)
+    
     mask_gt   = mask_gt.astype(bool)
     mask_pred = mask_pred.astype(bool)
 

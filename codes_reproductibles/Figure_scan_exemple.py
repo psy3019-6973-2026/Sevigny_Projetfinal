@@ -37,11 +37,14 @@ from ipywidgets import interact
 import importlib.util, sys
 
 # À AUTOMATISER 
-slice_index = 80
+slice_index = 46
 
 # Read scans and ground-truth masks with .nii.gz format O
-scan_path = "../data/BraTS2021_00495_t2.nii.gz"
-gt_path =   "../data/BraTS2021_00495_seg.nii.gz"
+scan_path = "../data_test/BraTS2021_00002/BraTS2021_00002_t2.nii.gz"
+gt_path =   "../data_test/BraTS2021_00002/BraTS2021_00002_seg.nii.gz"
+
+#scan_path = "../data/BraTS2021_00495_t2.nii.gz"
+#gt_path =   "../data/BraTS2021_00495_seg.nii.gz"
 
 # Load fichiers 
 scan_2d_og,gt_2d = fc.load_scan_2d(scan_path, gt_path, slice_index)
@@ -52,10 +55,12 @@ scan_2d = fc.sam_imput_format(scan_2d_og)
 # Figure partielle - jsp si je veux 
 # TO DO faire mieux pour sauvegarder dans la fonction, comme visu finale 
 figure = fc.visualisation_seg_gt(scan_2d_og, gt_2d)
-plt.savefig(f'./figures/Segmentation_originale.png', dpi=150)
+plt.show()
+figure.savefig('./figures/Segmentation_originale.png', dpi=150, bbox_inches='tight')
+plt.close(figure)
+
 
 '''
-
 # Load des modèles
 sam_predictor, med_sam_predictor, med_sam_model = fc.initialisation_modeles()
 
@@ -74,4 +79,5 @@ sam_dsc = fc.compute_dice_coefficient(gt_2d, sam_seg)
 medsam_dsc = fc.compute_dice_coefficient(gt_2d, medsam_seg)
 
 fc.visualisation_resultats(scan_2d_og, gt_2d, sam_seg, medsam_seg, gt_box, sam_dsc, medsam_dsc, save_path='figure_finale.png')
+
 '''
