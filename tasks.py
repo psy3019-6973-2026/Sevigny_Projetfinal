@@ -88,17 +88,15 @@ def run_boucle(c):
     from code.boucle import continue_statistic_score_on_dataset
     continue_statistic_score_on_dataset(input_dir, output_dir, models_dir)
 
-@task(pre=[run_boucle])
+@task
 def run_stats(c):
     """
     Run toutes les métriques de comparaison sur le tableau résultats 
     """
-    input_dir = Path(c.config.get("source_data_dir"))
-    output_dir = Path(c.config.get("output_data_dir"))
-    models_dir = Path(c.config.get("models_dir"))
+    resultats_dir = Path(c.config.get("output_data_dir"))
 
-    from code.boucle import continue_statistic_score_on_dataset
-    continue_statistic_score_on_dataset(input_dir, output_dir, models_dir)
+    from code.stats import run_stats
+    run_stats(resultats_dir) 
 
 '''
 

@@ -53,15 +53,6 @@ def initialisation_modeles(modeles_path) :
     print('Initialisation modèles terminée')
     return sam_predictor, med_sam_predictor, med_sam_model
 
-# Needed input to both models 
-def preprocess_scan(scan_2d):
-    lower_bound, upper_bound = np.percentile(scan_2d, 0.5), np.percentile(scan_2d, 99.5)
-    scan_2d_pre = np.clip(scan_2d, lower_bound, upper_bound)
-    scan_2d_pre = (scan_2d_pre - np.min(scan_2d_pre))/(np.max(scan_2d_pre)-np.min(scan_2d_pre))*255.0
-    scan_2d_pre[scan_2d==0] = 0
-    scan_2d_pre = np.uint8(scan_2d_pre)
-    return scan_2d_pre
-
 def get_sam_seg(scan_2d, bbox_raw, sam_predictor) :
     # predict the segmentation mask using the original SAM model
     sam_predictor.set_image(scan_2d)

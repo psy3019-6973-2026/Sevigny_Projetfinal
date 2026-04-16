@@ -112,13 +112,14 @@ def run_stats(output_dir) :
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
-    results_file = output_path / "resultats.pkl"
+    results_file = output_path / "resultats.pkl" # Tableau initial 
+    stats_file = output_path / "resultats.csv" # Tableau stats qu'il sauvegarde
 
     # Charger un tableau existant ou partir de zéro
     if results_file.exists():
         with open(results_file, "rb") as f:
             results_load = pickle.load(f)
-        print(f"Tableau existant chargé : {len(results)} sujets déjà traités")
+        print(f"Tableau existant chargé, {len(results_load.keys())}")
     else:
         results = {}
         print("Aucun tableau de résultats")
@@ -139,8 +140,8 @@ def run_stats(output_dir) :
         medsam_seg = medsam_seg.squeeze()
 
         # Ajout colone dice score 
-        sam_dsc = utiles.compute_dice_coefficient(gt > 0, sam_seg > 0)
-        medsam_dsc = utiles.compute_dice_coefficient(gt > 0, medsam_seg > 0)
+        sam_dsc = compute_dice_coefficient(gt > 0, sam_seg > 0)
+        medsam_dsc = compute_dice_coefficient(gt > 0, medsam_seg > 0)
 
         # Ajout colone precision, recall 
         precision_sam, recall_sam = precision_recall(gt > 0, sam_seg > 0)
@@ -171,5 +172,5 @@ def run_stats(output_dir) :
         tableau_resultat.loc[sujet, "medsam_AVG_gt2seg"] = AVG_gt2seg_medsam
 
     print(tableau_resultat.columns)
-    tableau_resultat.to_csv('./resultats/resultats_tableau.csv', index=True)
+    tableau_resultat.to_csv(stats_file, index=True)
 

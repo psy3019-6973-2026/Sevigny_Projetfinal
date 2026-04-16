@@ -4,9 +4,10 @@ import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import os
 
-tableau_resultat = pd.read_csv('./resultats/resultats_tableau.csv', index_col=0)
-#print(tableau_resultat)
+tableau_resultat = pd.read_csv('../../output_data/resultats.csv', index_col=0)
+print(tableau_resultat)
 
+'''
 # Mettre dans le bon format
 df_sam = tableau_resultat[['sam_dice', 'sam_precision', 'sam_recall', 'sam_HD100']].copy()
 df_sam.columns = ['dice', 'precision', 'recall', 'HD100']
@@ -103,3 +104,4 @@ def figure_comparaison_dice(tableau_resultat, save_dir="./visualisations"):
     print(f"Figure sauvegardée : {filepath}")
 
 figure_comparaison_dice(tableau_resultat, save_dir='./figures')
+'''
