@@ -1,6 +1,9 @@
 # invoke.yaml
 docker_image: airoh-template
 
+# Ajout des modèles (checkpoints)
+models_dir: models
+
 # Code folder
 code_dir: code
 
