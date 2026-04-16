@@ -83,10 +83,12 @@ def run_boucle(c):
     """
     input_dir = Path(c.config.get("source_data_dir"))
     output_dir = Path(c.config.get("output_data_dir"))
+    models_dir = Path(c.config.get("models_dir"))
 
-    print(input_dir, output_dir)
     from code.boucle import continue_statistic_score_on_dataset
-    continue_statistic_score_on_dataset(input_dir, output_dir)
+    continue_statistic_score_on_dataset(input_dir, output_dir, models_dir)
+
+
 
 '''
 
