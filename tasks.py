@@ -109,6 +109,7 @@ def run_notebook_explicatif(c):
 def run_figures(c):
     from airoh.utils import run_figures
     notebooks_dir = Path(c.config.get("notebooks_dir")) / "visu"
+    #figures_dir = Path(c.config.get("figures_dir"))
     run_figures(c, notebooks_dir, keys=["output_data_dir", "figures_dir"])
 
 '''
