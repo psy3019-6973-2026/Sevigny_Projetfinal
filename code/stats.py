@@ -61,7 +61,7 @@ def precision_recall(gt, pred) :
     return precision, recall
  
 def compute_hd100(mask_gt, mask_pred, voxel_spacing=None):
-    print(mask_gt.shape, mask_pred.shape)
+    #print(mask_gt.shape, mask_pred.shape)
     
     mask_gt   = mask_gt.astype(bool)
     mask_pred = mask_pred.astype(bool)
@@ -83,7 +83,7 @@ def compute_hd100(mask_gt, mask_pred, voxel_spacing=None):
     return float(max(dist_pred_to_gt.max(), dist_gt_to_pred.max()))
 
 def compute_avg_surf_dist(mask_gt, mask_pred, voxel_spacing=None):
-    print(mask_gt.shape, mask_pred.shape)
+    #print(mask_gt.shape, mask_pred.shape)
     
     mask_gt   = mask_gt.astype(bool)
     mask_pred = mask_pred.astype(bool)
@@ -105,7 +105,8 @@ def compute_avg_surf_dist(mask_gt, mask_pred, voxel_spacing=None):
     dist_pred_to_gt = dt_gt[surf_pred]
     dist_gt_to_pred = dt_pred[surf_gt]
 
-    return dist_pred_to_gt.mean(), dist_gt_to_pred.mean()
+    avg_dist = (dist_pred_to_gt.mean() + dist_gt_to_pred.mean()) / 2 
+    return avg_dist
 
 
 def run_stats(output_dir) : 
@@ -154,22 +155,20 @@ def run_stats(output_dir) :
         HD100_medsam = compute_hd100(gt > 0, medsam_seg > 0)
 
         # Ajout colone Average Surface Distance
-        AVG_seg2gt_sam, AVG_gt2seg_sam = compute_avg_surf_dist(gt > 0, sam_seg > 0)
-        AVG_seg2gt_medsam, AVG_gt2seg_medsam = compute_avg_surf_dist(gt > 0, medsam_seg > 0)
+        avg_dist_sam = compute_avg_surf_dist(gt > 0, sam_seg > 0)
+        avg_dist_medsam = compute_avg_surf_dist(gt > 0, medsam_seg > 0)
 
         tableau_resultat.loc[sujet, "sam_dice"] = sam_dsc
         tableau_resultat.loc[sujet, "sam_precision"] = precision_sam
         tableau_resultat.loc[sujet, "sam_recall"] = recall_sam
         tableau_resultat.loc[sujet, "sam_HD100"] = HD100_sam
-        tableau_resultat.loc[sujet, "sam_AVG_seg2gt"] = AVG_seg2gt_sam
-        tableau_resultat.loc[sujet, "sam_AVG_gt2seg"] = AVG_gt2seg_sam
+        tableau_resultat.loc[sujet, "sam_AVG_dist"] = avg_dist_sam
 
         tableau_resultat.loc[sujet, "medsam_dice"] = medsam_dsc
         tableau_resultat.loc[sujet, "medsam_precision"] = precision_medsam
         tableau_resultat.loc[sujet, "medsam_recall"] = recall_medsam
         tableau_resultat.loc[sujet, "medsam_HD100"] = HD100_medsam
-        tableau_resultat.loc[sujet, "medsam_AVG_seg2gt"] = AVG_seg2gt_medsam
-        tableau_resultat.loc[sujet, "medsam_AVG_gt2seg"] = AVG_gt2seg_medsam
+        tableau_resultat.loc[sujet, "medsam_AVG_dist"] = avg_dist_medsam
 
     print(tableau_resultat.columns)
     tableau_resultat.to_csv(stats_file, index=True)
