@@ -88,6 +88,7 @@ def run_boucle(c):
     from code.boucle import continue_statistic_score_on_dataset
     continue_statistic_score_on_dataset(input_dir, output_dir, models_dir)
 
+# Enlevé run boucle avant car sinon la roule à chaque fois idk
 @task
 def run_stats(c):
     """
