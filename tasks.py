@@ -99,6 +99,18 @@ def run_stats(c):
     from code.stats import run_stats
     run_stats(resultats_dir) 
 
+@task
+def run_notebook_explicatif(c):
+    from airoh.utils import run_figures
+    notebooks_dir = Path(c.config.get("notebooks_dir")) / "explicatif"
+    run_figures(c, notebooks_dir, keys=["source_data_dir", "output_data_dir", "models_dir"])
+
+@task
+def run_figures(c):
+    from airoh.utils import run_figures
+    notebooks_dir = Path(c.config.get("notebooks_dir")) / "visu"
+    run_figures(c, notebooks_dir, keys=["output_data_dir", "figures_dir"])
+
 '''
 
 À changer : 
