@@ -27,90 +27,9 @@ from code import utiles
 from code import modeles
 from pathlib import Path
 
-def continue_statistic_score_on_dataset_archive(data_path, output_path, modeles_path):
-
-    new_subjects_count = 0  
-    MAX_NEW_SUBJECTS = 30   
-    
-    output_path = Path(output_path)
-    output_path.mkdir(parents=True, exist_ok=True)
-    results_file = output_path / "resultats.pkl"
-
-    # Charger un tableau existant ou partir de zéro
-    if results_file.exists():
-        with open(results_file, "rb") as f:
-            results = pickle.load(f)
-        print(f"Tableau existant chargé : {len(results)} sujets déjà traités")
-    else:
-        results = {}
-        print("Aucun tableau existant, départ du début")
-
-    # Vérifie que le dossier de données n'est pas vide 
-    entries = list(os.scandir(data_path))
-    if not entries:
-        print(f"Le dossier {data_path} est vide, rien à traiter.")
-        return results
-    
-    sam_predictor, med_sam_predictor, med_sam_model = modeles.initialisation_modeles(modeles_path)
-    print('Initialisation terminée')
-
-    for subject_folder in sorted(os.scandir(data_path), key=lambda e: e.name):
-        
-        subject_id = subject_folder.name
-
-        # Skip si déjà traité
-        if subject_id in results:
-            print(f"Sujet {subject_id} déjà présent, skipping...")
-            continue
-
-        # Arrêt si on a atteint la limite
-        if new_subjects_count >= MAX_NEW_SUBJECTS:
-            print(f"Limite de {MAX_NEW_SUBJECTS} nouveaux sujets atteinte, arrêt.")
-            break
-
-        print('Commence pour', subject_id)
-
-        scan_path = os.path.join(subject_folder.path, f"{subject_id}_t2.nii.gz")
-        gt_path = os.path.join(subject_folder.path, f"{subject_id}_seg.nii.gz")
-
-        if not os.path.exists(scan_path) or not os.path.exists(gt_path):
-            print(f"Fichiers manquants pour {subject_id}, skipping...")
-            continue
-        
-        slice_index = np.random.randint(10, 140)
-        scan_2d_og, gt_2d = utiles.load_scan_2d(scan_path, gt_path, slice_index)
-
-        slice_index, scan_2d_og, gt_2d = utiles.verification_slice_tumeur(subject_id, scan_path, gt_path, slice_index, scan_2d_og, gt_2d)
-        
-        scan_2d = utiles.sam_imput_format(scan_2d_og)
-        #gt_box = fc.utiles.get_bbox_from_mask(gt_2d)
-        scan_2d_pre = utiles.preprocess_scan(scan_2d)
-
-        sam_seg, medsam_seg = modeles.get_2_both_seg_scan(scan_2d_pre, gt_2d, sam_predictor, med_sam_model)
-        print('Segmentation terminée', subject_id)
-
-        results[subject_id] = {
-            "slice_index": slice_index,
-            "image": scan_2d_og,
-            "gt": gt_2d,
-            "sam_seg": sam_seg,
-            "medsam_seg": medsam_seg,
-        }
-
-        new_subjects_count += 1 
-
-        # Sauvegarde incrémentale après chaque sujet
-        with open(results_file, "wb") as f:
-            pickle.dump(results, f)
-
-    print(f"Boucle terminée : {len(results)} sujets au total")
-    print(f"Résultats sauvegardés dans : {results_file}")
-
-    return results
-
 def continue_statistic_score_on_dataset(data_path, output_path, modeles_path):
 
-    MAX_NEW_SUBJECTS = 30   
+    MAX_NEW_SUBJECTS = 5   
     
     output_path = Path(output_path)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -144,25 +63,39 @@ def continue_statistic_score_on_dataset(data_path, output_path, modeles_path):
         subject_id = subject_folder.name
         print('Commence pour', subject_id)
 
+        # Chemins à partir du sujet 
         scan_path = os.path.join(subject_folder.path, f"{subject_id}_t2.nii.gz")
         gt_path = os.path.join(subject_folder.path, f"{subject_id}_seg.nii.gz")
 
+        # Vérifie qu'il y a des données pour le sujet 
         if not os.path.exists(scan_path) or not os.path.exists(gt_path):
             print(f"Fichiers manquants pour {subject_id}, skipping...")
             continue
-        
-        slice_index = np.random.randint(10, 140)
-        scan_2d_og, gt_2d = utiles.load_scan_2d(scan_path, gt_path, slice_index)
 
-        slice_index, scan_2d_og, gt_2d = utiles.verification_slice_tumeur(subject_id, scan_path, gt_path, slice_index, scan_2d_og, gt_2d)
+        # Load des fichiers
+        scan_obj = nib.load(scan_path)
+        gt_obj = nib.load(gt_path)
+        scan_2d_og = scan_obj.get_fdata()
+        gt_data = gt_obj.get_fdata()
+
+        # Obtient la seed random 
+        subject_number = int(subject_id.split("_")[1])
+        rng = np.random.default_rng(seed=subject_number)
         
+        # Obtient la slice de tumeur parmis l'ensemble des slices possibles 
+        tumor_slices = np.where(gt_data.any(axis=(0, 1)))[0]
+        slice_index = rng.integers(tumor_slices.min(), tumor_slices.max())
+        
+        # Preprocess et mettre dans le bon format 
+        scan_2d_og,gt_2d = utiles.get_slice_pair(slice_index, scan_2d_og, gt_data)
         scan_2d = utiles.sam_imput_format(scan_2d_og)
-        #gt_box = fc.utiles.get_bbox_from_mask(gt_2d)
         scan_2d_pre = utiles.preprocess_scan(scan_2d)
 
+        # Segmentation
         sam_seg, medsam_seg = modeles.get_2_both_seg_scan(scan_2d_pre, gt_2d, sam_predictor, med_sam_model)
         print('Segmentation terminée', subject_id)
 
+        # Store les résultats 
         results[subject_id] = {
             "slice_index": slice_index,
             "image": scan_2d_og,
