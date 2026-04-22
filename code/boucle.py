@@ -28,6 +28,9 @@ from code import modeles
 from pathlib import Path
 
 def continue_statistic_score_on_dataset(data_path, output_path, modeles_path):
+
+    new_subjects_count = 0  
+    MAX_NEW_SUBJECTS = 30   
     
     output_path = Path(output_path)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -60,6 +63,11 @@ def continue_statistic_score_on_dataset(data_path, output_path, modeles_path):
             print(f"Sujet {subject_id} déjà présent, skipping...")
             continue
 
+        # Arrêt si on a atteint la limite
+        if new_subjects_count >= MAX_NEW_SUBJECTS:
+            print(f"Limite de {MAX_NEW_SUBJECTS} nouveaux sujets atteinte, arrêt.")
+            break
+
         print('Commence pour', subject_id)
 
         scan_path = os.path.join(subject_folder.path, f"{subject_id}_t2.nii.gz")
@@ -88,6 +96,8 @@ def continue_statistic_score_on_dataset(data_path, output_path, modeles_path):
             "sam_seg": sam_seg,
             "medsam_seg": medsam_seg,
         }
+
+        new_subjects_count += 1 
 
         # Sauvegarde incrémentale après chaque sujet
         with open(results_file, "wb") as f:
