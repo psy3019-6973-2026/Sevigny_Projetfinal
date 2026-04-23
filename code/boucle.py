@@ -3,10 +3,7 @@ import os
 join = os.path.join
 import nibabel as nib
 import numpy as np
-from ipywidgets import interact
-#import seaborn as sns
 import pickle
-from ipywidgets import interact
 from code import utiles
 from code import modeles
 from pathlib import Path
@@ -64,16 +61,6 @@ def continue_statistic_score_on_dataset(data_path, output_path, modeles_path):
 
         # Couche analysé, aléatoire selon le random seed du id 
         slice_index = utiles.get_slice_index(subject_id, gt_data) 
-
-        '''
-        # Obtient la seed random 
-        subject_number = int(subject_id.split("_")[1])
-        rng = np.random.default_rng(seed=subject_number)
-        
-        # Obtient la slice de tumeur parmis l'ensemble des slices possibles 
-        tumor_slices = np.where(gt_data.any(axis=(0, 1)))[0]
-        slice_index = rng.integers(tumor_slices.min(), tumor_slices.max())
-        '''
 
         # Preprocess et mettre dans le bon format 
         scan_2d_og,gt_2d = utiles.get_slice_pair(slice_index, scan_2d_og, gt_data)
