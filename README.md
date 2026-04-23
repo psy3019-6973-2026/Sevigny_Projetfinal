@@ -50,6 +50,22 @@ b. Fonctions à rouler pour faire l'analyse sur tous les sujets :
 
 	invoke run-figures
 
+| Fichier/Dossier | Description |
+|---|---|
+| `Notebooks/` | Folder de notebooks : explicatif et pour les figures |
+| `code/` | Fichier de codes pour les analyses |
+| `source_data/` | Dossier avec les scans |
+| `output_data/` | Dossier ou les figures et et resultats sont produits |
+| `output_data/` | Dossier ou copier les checkpoints des modèles |
+| `REPO` | Repo original |
+| `tasks.py` | Pipeline automatisé invoke |
+| `invoke.yaml` | Configuration du pipeline |
+| `environment.ylm` | Fichier pour la création de l'environnement virtuel |
+| `notes.txt` | timeline du projet |
+| `documentation_taches.md` | Documentation détaillés des tâches |
+| `Archive` | Fichier avec contenu du repo tâche 1 |
+| `LICENSE` | Licence MIT du projet |
+
 # Reproductibilité
 
 Pour reproduire les mêmes analyses et figures que moi, j'ai roulé sur un sous-ensemble de participants par souci d'espace de stockage et de RAM, c'est à dire : 
@@ -138,7 +154,7 @@ invoke run-notebook-explicatif
 
 Pour voir les tâches initiales, présentés à la présentation de mis session, voir Presentation_initiale.md 
 
-Pour une documentation plus précise sur la timeline et les issues rencontrés de chaque tâche, voir documentation_taches.md 
+Pour une documentation plus précise sur la timeline et les issues rencontrés de chaque tâche, voir documentation_taches.md   
 Pour mes notes (très personnelles et brouillones, plus comme un journal de bord que je tenais) à travers le temps, voir notes.txt 
 
 ## 1. Tâche 1 : Reproduction du Notebook 
@@ -159,16 +175,16 @@ Ce qui a été fait :
 -	Environnement.yml 
 		- Certains packages ont du être installés en pip 
 
-J'ai travaillé sur le Notebook_initial_reproduit.ipynb 
-Il était initialement dans un repo forked du projet original
-Je l'ai merge (pour l'historique) à la fin, voir Note repo git 
+J'ai travaillé sur le Notebook_initial_reproduit.ipynb   
+Il était initialement dans un repo forked du projet original  
+Je l'ai merge (pour l'historique) à la fin, voir Note repo git  
 
 ## 2. Tâche 2 : Script et reproductibilité 
 
-Tâche ajoutée après le cours sur les scripts 
+Tâche ajoutée après le cours sur les scripts  
 La dernière tâche était initialement sur un Notebook explicatif du modèle, mais les analyses étaient 
-toutes regroupés dans un seul notebook, avec des chemins de fichiers hardcodés après ma première tâche et je considérais qu'il restait du travail considérable pour rendre les analyses reproductibles. 
-J'ai voulu d'abord séparer les grandes boucles d'analyses initiales en petites fonctions, puis scripts ce qui a grandement aidé la lisibilité, puis j'ai voulu accomplir le défi de mettre en format airoh. 
+toutes regroupés dans un seul notebook, avec des chemins de fichiers hardcodés après ma première tâche et je considérais qu'il restait du travail considérable pour rendre les analyses reproductibles.  
+J'ai voulu d'abord séparer les grandes boucles d'analyses initiales en petites fonctions, puis scripts ce qui a grandement aidé la lisibilité, puis j'ai voulu accomplir le défi de mettre en format airoh.   
 
 -	Séparé le notebook en 2 parties indépendantes : 
 		a. La partie tutorielle sur un sujet dans un notebook (NOTEBOOK), qui explique chaque étapes avec plusieurs visualisation 
