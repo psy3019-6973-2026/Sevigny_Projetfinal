@@ -28,7 +28,7 @@ from pathlib import Path
 
 def continue_statistic_score_on_dataset(data_path, output_path, modeles_path):
 
-    MAX_NEW_SUBJECTS = 5
+    MAX_NEW_SUBJECTS = 20
     
     output_path = Path(output_path)
     output_path.mkdir(parents=True, exist_ok=True)
