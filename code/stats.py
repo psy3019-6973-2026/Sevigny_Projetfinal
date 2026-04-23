@@ -1,29 +1,9 @@
-import numpy as np
-import matplotlib.pyplot as plt
 import os
 join = os.path.join
-from tqdm import tqdm
-#import torch
-#import torchvision
-from torch.utils.data import Dataset, DataLoader
-#import monai
-from segment_anything import SamPredictor, sam_model_registry
-from segment_anything.utils.transforms import ResizeLongestSide
-#import skimage
-# MOI ajout des imports qui sont partout dans le doc ici : 
-#import tarfile
-import nibabel as nib
-#import glob
-import numpy as np
-import matplotlib.pyplot as plt
 from ipywidgets import interact
-#import seaborn as sns
 import pickle
-import pandas as pd # Ajouté pour les stats
-from ipywidgets import interact
+import pandas as pd 
 from scipy.ndimage import distance_transform_edt, binary_erosion
-#import matplotlib.lines as mlines
-from code import utiles 
 from pathlib import Path
 
 ### STATISTIQUES
@@ -120,10 +100,10 @@ def run_stats(output_dir) :
     if results_file.exists():
         with open(results_file, "rb") as f:
             results_load = pickle.load(f)
-        print(f"Tableau existant chargé, {len(results_load.keys())}")
+        print(f"Tableau de résultats chargé, analyse avec {len(results_load.keys())} sujets")
     else:
         results = {}
-        print("Aucun tableau de résultats")
+        print("Aucun tableau de résultats, rouler run-boucle en premier")
         return 
 
     # Création du tableau initial 

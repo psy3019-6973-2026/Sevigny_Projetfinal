@@ -3,10 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 import matplotlib.lines as mlines
-#import os
 from code import utiles
-from code import modeles
-#from pathlib import Path
 import pickle
 
 def show_mask(mask, ax, random_color=False):
