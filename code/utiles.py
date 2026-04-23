@@ -2,24 +2,24 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 join = os.path.join
-from tqdm import tqdm
-import torch
-import torchvision
-from torch.utils.data import Dataset, DataLoader
-import monai
+#from tqdm import tqdm
+#import torch
+#import torchvision
+#from torch.utils.data import Dataset, DataLoader
+#import monai
 from segment_anything import SamPredictor, sam_model_registry
 from segment_anything.utils.transforms import ResizeLongestSide
-import skimage
+#import skimage
 # MOI ajout des imports qui sont partout dans le doc ici : 
-import tarfile
+#import tarfile
 import nibabel as nib
-import glob
+#import glob
 import numpy as np
 import matplotlib.pyplot as plt
 from ipywidgets import interact
 import seaborn as sns
-import pickle
-import pandas as pd # Ajouté pour les stats
+#import pickle
+#import pandas as pd # Ajouté pour les stats
 from ipywidgets import interact
 from scipy.ndimage import distance_transform_edt, binary_erosion
 import matplotlib.lines as mlines
@@ -38,6 +38,18 @@ def get_bbox_from_mask(mask):
 
     return np.array([x_min, y_min, x_max, y_max])
 
+def get_slice_index(sujet, scan_gt) : 
+        
+        # Obtient la seed random 
+        subject_number = int(sujet.split("_")[1])
+        rng = np.random.default_rng(seed=subject_number)
+        
+        # Obtient la slice de tumeur parmis l'ensemble des slices possibles 
+        tumor_slices = np.where(scan_gt.any(axis=(0, 1)))[0]
+        slice_index = rng.integers(tumor_slices.min(), tumor_slices.max())
+
+        return slice_index
+
 def get_slice_pair(layer, scan_data, gt_data):
     return scan_data[:, :, layer],gt_data[:, :, layer]
 
@@ -49,17 +61,6 @@ def sam_imput_format(scan_2d) :
         scan_2d = np.repeat(scan_2d[:,:,None], 3, axis=-1)
     return scan_2d
 
-def load_scan_2d(scan_path, gt_path, slice_index) : 
-    scan_obj = nib.load(scan_path)
-    gt_obj = nib.load(gt_path)
-
-    scan_data = scan_obj.get_fdata()
-    gt_data = gt_obj.get_fdata()
-
-    scan_2d,gt_2d = get_slice_pair(slice_index, scan_data, gt_data)
-
-    return scan_2d,gt_2d
-
 def preprocess_scan(scan_2d):
     lower_bound, upper_bound = np.percentile(scan_2d, 0.5), np.percentile(scan_2d, 99.5)
     scan_2d_pre = np.clip(scan_2d, lower_bound, upper_bound)
@@ -67,26 +68,3 @@ def preprocess_scan(scan_2d):
     scan_2d_pre[scan_2d==0] = 0
     scan_2d_pre = np.uint8(scan_2d_pre)
     return scan_2d_pre
-
-def verification_slice_tumeur(subject_id, scan_path, gt_path, slice_index, scan_2d, gt_2d, max_attempts=10):
-
-    if np.sum(gt_2d) > 0:
-        print('Slice initiale fonctionne', slice_index)
-        return slice_index, scan_2d, gt_2d
-
-    # Seulement ici on charge le 3D
-    print(f'Slice initiale sans tumeur ({slice_index}), chargement volume 3D...')
-    scan_obj = nib.load(scan_path)
-    gt_obj = nib.load(gt_path)
-    image_3d = scan_obj.get_fdata()
-    gt_3d = gt_obj.get_fdata()
-
-    for _ in range(max_attempts):
-        new_index = np.random.randint(10,140)
-        new_image, new_gt = get_slice_pair(new_index, image_3d, gt_3d)
-        if np.sum(new_gt) > 0:
-            print(f'Slice trouvée: {new_index}')
-            return new_index, new_image, new_gt
-
-    print(f"Aucune slice valide pour {subject_id}, retour à la slice initiale")
-    return slice_index, scan_2d, gt_2d

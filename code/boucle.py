@@ -17,11 +17,10 @@ import glob
 import numpy as np
 import matplotlib.pyplot as plt
 from ipywidgets import interact
-import seaborn as sns
+#import seaborn as sns
 import pickle
 import pandas as pd # Ajouté pour les stats
 from ipywidgets import interact
-from scipy.ndimage import distance_transform_edt, binary_erosion
 import matplotlib.lines as mlines
 from code import utiles
 from code import modeles
@@ -29,7 +28,7 @@ from pathlib import Path
 
 def continue_statistic_score_on_dataset(data_path, output_path, modeles_path):
 
-    MAX_NEW_SUBJECTS = 25
+    MAX_NEW_SUBJECTS = 5
     
     output_path = Path(output_path)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -78,6 +77,10 @@ def continue_statistic_score_on_dataset(data_path, output_path, modeles_path):
         scan_2d_og = scan_obj.get_fdata(dtype=np.float32)
         gt_data = gt_obj.get_fdata(dtype=np.float32)
 
+        # Couche analysé, aléatoire selon le random seed du id 
+        slice_index = utiles.get_slice_index(subject_id, gt_data) 
+
+        '''
         # Obtient la seed random 
         subject_number = int(subject_id.split("_")[1])
         rng = np.random.default_rng(seed=subject_number)
@@ -85,7 +88,8 @@ def continue_statistic_score_on_dataset(data_path, output_path, modeles_path):
         # Obtient la slice de tumeur parmis l'ensemble des slices possibles 
         tumor_slices = np.where(gt_data.any(axis=(0, 1)))[0]
         slice_index = rng.integers(tumor_slices.min(), tumor_slices.max())
-        
+        '''
+
         # Preprocess et mettre dans le bon format 
         scan_2d_og,gt_2d = utiles.get_slice_pair(slice_index, scan_2d_og, gt_data)
         scan_2d = utiles.sam_imput_format(scan_2d_og)
