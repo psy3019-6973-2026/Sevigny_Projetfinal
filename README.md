@@ -213,12 +213,12 @@ J'ai voulu d'abord séparer les grandes boucles d'analyses initiales en petites 
 **Ce qui a été fait :**
 - Recherche et sélection de métriques
 - Amélioration du graphique de Dice score :
-  - Ajout des points individuels, barre de significativité, titre, axes et ligne de médiane
-  - Amélioration de l'esthétique
+	- Ajout des points individuels, barre de significativité, titre, axes et ligne de médiane
+ 	- Amélioration de l'esthétique
 - Ajout de 4 métriques supplémentaires :
-  - 2 de chevauchement (Precision, Recall)
-  - 2 de périmètre (HD100, distance moyenne)
-  - Explications et justifications dans les notebooks
+  	- 2 de chevauchement (Precision, Recall)
+  	- 2 de périmètre (HD100, distance moyenne)
+  	- Explications et justifications dans les notebooks
 - Graphiques comparant les 4 métriques conjointement par type (chevauchement et périmètre)
 - Graphique illustrant l'évolution du Dice score par sujet
 Toutes les figures finales sont dans output_data/Figures 
