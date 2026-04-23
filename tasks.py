@@ -9,6 +9,72 @@ from invoke import task
         "name": "Nom logique du fichier, tel que défini dans la section 'files' de invoke.yaml."
     }
 )
+def import_file(c, name):
+    """🌐 Download a single file from a URL using urllib."""
+    from urllib.request import Request, urlopen
+    
+    files = c.config.get("files", {})
+    if name not in files:
+        raise ValueError(f"❌ No file config found for '{name}' in invoke.yaml.")
+
+    entry = files[name]
+    url = entry.get("url")
+    output_file = entry.get("output_file")
+
+    if not url or not output_file:
+        raise ValueError(
+            f"❌ Entry for '{name}' must define both 'url' and 'output_file'."
+        )
+
+    output_path = Path(output_file)
+    tmp_path = output_path.with_suffix(output_path.suffix + ".part")
+
+    if output_path.exists() and output_path.stat().st_size > 0:
+        print(f"🫧 Skipping {name}: {output_file} already exists.")
+        return
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    tmp_path.unlink(missing_ok=True)
+
+    print(f"📥 Downloading '{name}' from {url}")
+    print(f"📁 Target: {output_file}")
+
+    req = Request(
+        url,
+        headers={
+            "User-Agent": "Mozilla/5.0",
+            "Accept": "*/*",
+        },
+    )
+
+    try:
+        with urlopen(req, timeout=60) as response, tmp_path.open("wb") as f:
+            total = 0
+            while True:
+                chunk = response.read(8192)
+                if not chunk:
+                    break
+                f.write(chunk)
+                total += len(chunk)
+
+        if total == 0:
+            tmp_path.unlink(missing_ok=True)
+            raise RuntimeError(f"❌ Downloaded 0 bytes for '{name}'.")
+
+        tmp_path.replace(output_path)
+
+    except Exception as e:
+        tmp_path.unlink(missing_ok=True)
+        raise RuntimeError(f"❌ Failed to download '{name}' from {url}: {e}") from e
+
+    print(f"✅ Downloaded {name} to {output_file} ({output_path.stat().st_size} bytes)")
+
+@task
+def fetch(c):
+    """
+    Retrieve all data assets.
+    """
+    import_file(c, "papers")
 
 @task
 def run_boucle(c):
@@ -41,23 +107,19 @@ def run_notebook_explicatif(c, sujet="BraTS2021_00002"):
     notebooks_dir = Path(c.config.get("notebooks_dir")) / "explicatif"
     run_figures(c, notebooks_dir, keys=["source_data_dir", "output_data_dir", "models_dir", "sujet"])
 
-
 @task
-def save_visu_sujet(c, sujet):
+def save_visu_sujet(c, sujet) : 
     from code.save_visu_sujet import visu
-    import pandas as pd
+    c.config["sujet"] = sujet
 
     output_dir = Path(c.config.get("output_data_dir"))
     output_figure = Path(c.config.get("figures_dir"))
+    visu(sujet, output_dir, output_figure) 
 
-    # Validation avant d'appeler visu
-    tableau = output_dir / "resultats.csv"
-    if not tableau.exists():
-        raise FileNotFoundError(f"Fichier de résultats introuvable : {tableau}")
-    
-    tableau_resultat = pd.read_csv(tableau, index_col=0)
-    if sujet not in tableau_resultat.index:
-        raise ValueError(f"Sujet '{sujet}' introuvable dans le tableau de résultats.")
 
-    visu(sujet, output_dir, output_figure)
-
+@task
+def run_figures(c):
+    from airoh.utils import run_figures
+    notebooks_dir = Path(c.config.get("notebooks_dir")) / "visu"
+    #figures_dir = Path(c.config.get("figures_dir"))
+    run_figures(c, notebooks_dir, keys=["output_data_dir", "figures_dir"])
