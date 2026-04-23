@@ -165,17 +165,17 @@ But initial : Je veux reproduire le nootebook d'application des deux modèles en
 J'ai combiné avec la partie éducative de la tâche initiale 3 
 
 Ce qui a été fait : 
--	Reproduction du Notebook initial 
-		- Documentation de issues 
-			- Trouver les données, non disponible sur le lien avec le github. Et trouver comment mettre dans le bon format 
-			- Difficultés avec certains packages et une fonction écrite par l’élève manquante 
-			- Ajustements car le code était fait pour avoir un GPU 
-			- Problématiques dans certaines fonctions (utilisation de variables globales innapropriés)
-			- Changement pour une adaptation si la slice sélectionnée n’a pas de tumeur afin de maximiser tous les participants 
-			- Changements mineurs dans le code, comme ajout de titres, commentaires explicatifs et organisation  
--   Refactorisation de fonctions 
--	Environnement.yml 
-		- Certains packages ont du être installés en pip 
+-	Reproduction du Notebook initial  
+		- Documentation de issues   
+			- Trouver les données, non disponible sur le lien avec le github. Et trouver comment mettre dans le bon format   
+			- Difficultés avec certains packages et une fonction écrite par l’élève manquante   
+			- Ajustements car le code était fait pour avoir un GPU   
+			- Problématiques dans certaines fonctions (utilisation de variables globales innapropriés)  
+			- Changement pour une adaptation si la slice sélectionnée n’a pas de tumeur afin de maximiser tous les participants   
+			- Changements mineurs dans le code, comme ajout de titres, commentaires explicatifs et organisation     
+-   Refactorisation de fonctions   
+-	Environnement.yml    
+		- Certains packages ont du être installés en pip   
 
 J'ai travaillé sur le Notebook_initial_reproduit.ipynb   
 Il était initialement dans un repo forked du projet original  
