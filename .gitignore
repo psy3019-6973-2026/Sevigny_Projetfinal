@@ -3,7 +3,4 @@ source_data/
 source_data/
 *.pkl
 *.png
-figures/
-visualisations/
-resultats/
 *.pth
