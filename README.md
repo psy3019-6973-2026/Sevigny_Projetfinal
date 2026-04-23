@@ -179,6 +179,7 @@ Ce qui a été fait :
     - Problématiques dans certaines fonctions (utilisation de variables globales inappropriées)
     - Changement pour une adaptation si la slice sélectionnée n'a pas de tumeur afin de maximiser tous les participants
     - Changements mineurs dans le code, comme ajout de titres, commentaires explicatifs et organisation
+- Simplification et ajouts de commentaires
 - Refactorisation de fonctions
 - Création d'un environment.yml
   - Certains packages ont dû être installés en pip 
