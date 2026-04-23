@@ -224,18 +224,35 @@ Toutes les figures finales sont dans output_data/Figures
 ### Comparaison du Dice score 
 
 Visualisation originale : 
-![Figure originale](Archive/image1.png)
+![Figure originale](Archive/Image1.png)
 
 Visualisations ajoutés : 
 ![Boxplot Dice](output_data/Figures/figure_dice.png)
 ![Comp Dice](output_data/Figures/figure_comparaison_dice.png)
 
+Le projet original obtenait un dice autour de 0.65 pour MEDSAM et autour de 0.72 pour SAM (obtenu du graphique)
+
+Mes analyses produisent un résultat très proche, avec pour SAM 0.67 (0.90) et pour MEDSAM 0.73 (0.18). La différence est significative avec t = -3.92 (p = 0.0002). 
+
 ### Métriques de précision et recall 
 ![Precision recall](output_data/Figures/figure_recall_precision.png)
+
+On voit ici des différences importantes entre les deux modèles. SAM obtient une précision très élevée et homogène = quand il segmente quelque chose, c'est presque toujours du vrai tissu tumoral (peu de faux positifs). MedSAM est significativement plus bas, ce qui veut dire qu'il inclut davantage de tissu non tumoral dans ses segmentations.
+
+Par contre, SAM a un recall beaucoup plus faible et très variable — il manque une grande partie du tissu tumoral réel (beaucoup de faux négatifs), alors que MedSAM en détecte une plus grande proportion. SAM est dont plus précis mais conservateur, en manquant des zones tumorales (ou MED-SAM performe mieux) mais il a presque toujours raison dans son inclusion d'un voxel comme une tumeur. 
+
 
 ### Métriques de périmètre 
 
 ![Périmètre](output_data/Figures/figure_perimètre.png)
+
+Ici on peut voir que pour les deux métriques de périmètre, MEDSAM performe mieux car la distance entre la segmentation prédite est réelle est significativement plus faible que MEDSAM 
+
+## Conclusion 
+
+Le modèle fine tuné (MED-SAM) performe mieux sur toutes les métriques sauf la précision. Ce qui veut dire qu'il détecte plus de tissu tumoral et ses contours sont plus proches des vrais bords. SAM est très précis (peu de faux positifs), mais il segmente des zones petites et conservatrices, en manquant souvent des parties de tumeur (recall et dice bas) et a des contours loins des bords (périmètre élevés) comparativement à medsam. 
+
+En conclusion les résultats du projet original d'amélioration du Dice score sont reproduit, et l'ajout de nouvelles métriques permet de mieux comprendre les forces et faiblesses de chaque modèle.
 
 # Utilisation d'IA 
 L'intelligence artificielle a été utilisée dans ce projet, surtout pour l'aide à la compréhension de certains concepts, la paufination de certains éléments de code et l'interprétation de messages d'erreurs. 
