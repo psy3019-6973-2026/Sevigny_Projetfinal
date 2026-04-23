@@ -165,17 +165,17 @@ But initial : Je veux reproduire le nootebook d'application des deux modèles en
 J'ai combiné avec la partie éducative de la tâche initiale 3 
 
 Ce qui a été fait : 
--	Reproduction du Notebook initial  
-		- Documentation de issues   
-			- Trouver les données, non disponible sur le lien avec le github. Et trouver comment mettre dans le bon format   
-			- Difficultés avec certains packages et une fonction écrite par l’élève manquante   
-			- Ajustements car le code était fait pour avoir un GPU   
-			- Problématiques dans certaines fonctions (utilisation de variables globales innapropriés)  
-			- Changement pour une adaptation si la slice sélectionnée n’a pas de tumeur afin de maximiser tous les participants   
-			- Changements mineurs dans le code, comme ajout de titres, commentaires explicatifs et organisation     
--   Refactorisation de fonctions   
--	Environnement.yml    
-		- Certains packages ont du être installés en pip   
+- Reproduction du Notebook initial  
+* Documentation de issues   
++ Trouver les données, non disponible sur le lien avec le github. Et trouver comment mettre dans le bon format   
++ Difficultés avec certains packages et une fonction écrite par l’élève manquante   
++ Ajustements car le code était fait pour avoir un GPU   
++ Problématiques dans certaines fonctions (utilisation de variables globales innapropriés)  
++ Changement pour une adaptation si la slice sélectionnée n’a pas de tumeur afin de maximiser tous les participants   
++ Changements mineurs dans le code, comme ajout de titres, commentaires explicatifs et organisation     
+- Refactorisation de fonctions   
+- Création d'un Environnement.yml    
+* Certains packages ont du être installés en pip   
 
 J'ai travaillé sur le Notebook_initial_reproduit.ipynb   
 Il était initialement dans un repo forked du projet original  
@@ -192,15 +192,15 @@ J'ai voulu d'abord séparer les grandes boucles d'analyses initiales en petites 
   - **b. Segmentation automatique** : analyse de tous les sujets et comparaison des métriques pour les deux modèles
 
 - Rendu l'ensemble des analyses séparé en scripts exécutables appelés à partir de invoke :
-  - Codes explicatifs pour la section a. :
-    - `run-notebook-explicatif` : roule le notebook de partie a au complet
-    - `run-visu-sujet` : sauvegarde la visualisation finale pour un sujet sélectionné
-  - Codes pour l'analyse automatique de la section b. :
-    - `run-boucle`
-    - `run-stats`
-    - `run-figures`
+* Codes explicatifs pour la section a. :
++ `run-notebook-explicatif` : roule le notebook de partie a au complet
++ `run-visu-sujet` : sauvegarde la visualisation finale pour un sujet sélectionné
+- Codes pour l'analyse automatique de la section b. :
+* `run-boucle`
+* `run-stats`
+* `run-figures`
 
-  Ces commandes produisent une analyse statistique complète sur des couches aléatoires de segmentation pour chaque sujet.
+Ces commandes produisent une analyse statistique complète sur des couches aléatoires de segmentation pour chaque sujet.
 
 - Une fois l'environnement installé et les données téléchargées selon les instructions du README, l'analyse est totalement reproductible à partir de commandes invoke.
 
@@ -213,12 +213,12 @@ J'ai voulu d'abord séparer les grandes boucles d'analyses initiales en petites 
 **Ce qui a été fait :**
 - Recherche et sélection de métriques
 - Amélioration du graphique de Dice score :
-	- Ajout des points individuels, barre de significativité, titre, axes et ligne de médiane
- 	- Amélioration de l'esthétique
+* Ajout des points individuels, barre de significativité, titre, axes et ligne de médiane
+* Amélioration de l'esthétique
 - Ajout de 4 métriques supplémentaires :
-  	- 2 de chevauchement (Precision, Recall)
-  	- 2 de périmètre (HD100, distance moyenne)
-  	- Explications et justifications dans les notebooks
+* 2 de chevauchement (Precision, Recall)
+* 2 de périmètre (HD100, distance moyenne)
+* Explications et justifications dans les notebooks
 - Graphiques comparant les 4 métriques conjointement par type (chevauchement et périmètre)
 - Graphique illustrant l'évolution du Dice score par sujet
 Toutes les figures finales sont dans output_data/Figures 
