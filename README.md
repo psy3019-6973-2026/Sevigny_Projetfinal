@@ -70,36 +70,30 @@ a. Prérequis : configurer l'API Kaggle
 
 - Suivre les instructions pour créer un token : https://github.com/Kaggle/kaggle-cli/blob/main/docs/README.md#api-credentials
 
-b. Télécharger les données :
-
+b. Télécharger les données :  
     kaggle datasets download dschettler8845/brats-2021-task1 -p source_data
 
-c. Dézipper les données :
-
+c. Dézipper les données :  
     tar -xf source_data/BraTS2021_Training_Data.tar -C source_data
 
 Les données doivent être dans ce format : 
 
+```
 ├── source_data
-
-│   ├── BraTS2021_00000
-
-│   │   ├── BraTS2021_00000_seg.nii.gz
-
-│   │   └── BraTS2021_00000_t2.nii.gz
-
-│   ├── BraTS2021_00002
-
-│   │   ├── BraTS2021_00002_seg.nii.gz
-
-│   │   └── BraTS2021_00002_t2.nii.gz
+│   ├── BraTS2021_00000
+│   │   ├── BraTS2021_00000_seg.nii.gz
+│   │   └── BraTS2021_00000_t2.nii.gz
+│   ├── BraTS2021_00002
+│   │   ├── BraTS2021_00002_seg.nii.gz
+│   │   └── BraTS2021_00002_t2.nii.gz
 ...
+```
 
-d. Vérifier que les modèles sont présents 
-Les modèles checkpoints des modèles sont inclus dans modèles/ 
-Les modèles ont été trouvés sur : 
-	- MED-SAM : https://drive.google.com/drive/folders/1MbHo0qBfkQYARUhB-DAhbD5a4lhmYNqs 
-	- SAM : https://github.com/facebookresearch/segment-anything/blob/main/README.md 
+d. Vérifier que les modèles sont présents   
+Les modèles checkpoints des modèles sont inclus dans modèles/   
+Les modèles ont été trouvés sur :   
+	- MED-SAM : https://drive.google.com/drive/folders/1MbHo0qBfkQYARUhB-DAhbD5a4lhmYNqs   
+	- SAM : https://github.com/facebookresearch/segment-anything/blob/main/README.md   
 
 ## Exécuter le code et les analyses avec invoke! 
 
@@ -118,6 +112,7 @@ invoke stats
 ```
 
 ### **Étape 4** : Notebook avec toutes les visualisations 
+Ajoute les figures dans output_data/Figures 
 ```
 bash
 invoke run-figures
