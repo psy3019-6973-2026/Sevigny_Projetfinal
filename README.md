@@ -44,7 +44,7 @@ Pour plus de détails concernant le projet, voir Achive/Présentation_initiale.m
 
 a. Notebook explicatif qui prend un sujet et passe à travers toutes les étapes et produit les visualisations 
 
-<img src="output_data/Figures/BraTS2021_00002.png" style="width: 50%;">
+<img src="output_data/Figures/BraTS2021_00002_segmentation.png" style="width: 50%;">
 
 b. Fonctions à rouler pour faire l'analyse sur tous les sujets : 
 
