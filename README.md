@@ -221,6 +221,22 @@ J'ai voulu d'abord séparer les grandes boucles d'analyses initiales en petites 
 - Graphique illustrant l'évolution du Dice score par sujet
 Toutes les figures finales sont dans output_data/Figures 
 
+### Comparaison du Dice score 
+
+Visualisation originale : 
+![Figure originale](Archive/image1.png)
+
+Visualisations ajoutés : 
+![Boxplot Dice](output_data/Figures/figure_dice.png)
+![Comp Dice](output_data/Figures/figure_comparaison_dice.png)
+
+### Métriques de précision et recall 
+![Precision recall](output_data/Figures/figure_recall_precision.png)
+
+### Métriques de périmètre 
+
+![Périmètre](output_data/Figures/figure_perimètre.png)
+
 # Utilisation d'IA 
 L'intelligence artificielle a été utilisée dans ce projet, surtout pour l'aide à la compréhension de certains concepts, la paufination de certains éléments de code et l'interprétation de messages d'erreurs. 
 
