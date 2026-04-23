@@ -46,7 +46,7 @@ a. Notebook explicatif qui prend un sujet et passe à travers toutes les étapes
 
 <img src="output_data/Figures/BraTS2021_00002_segmentation.png" style="width: 50%;">
 
-b. Fonctions à rouler pour faire l'analyse sur tous les sujets : 
+b. Fonctions à rouler pour faire l'analyse sur tous les sujets, une fois le setup complet (voir étapes reproductibilités) : 
 
 	invoke run-boucle 
 
