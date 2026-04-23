@@ -16,6 +16,9 @@ source_data_dir: source_data
 # output data folders
 output_data_dir: output_data
 
+# Figures
+figures_dir: output_data/Figures
+
 # file sources
 files:
   papers:

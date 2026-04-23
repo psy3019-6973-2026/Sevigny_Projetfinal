@@ -1,4 +1,4 @@
-name: env_projet_repro
+name: env_projet_final
 channels:
 -   conda-forge
 -   defaults
@@ -24,3 +24,5 @@ dependencies:
       - airoh
       - segment-anything
       - scikit-image
+      - nbconvert
+      - kaggle
