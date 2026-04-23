@@ -1,0 +1,304 @@
+Notes de ma progression sur le projet : 
+
+QUESTIONS : 
+
+- Le fetch va télécharger 200 données, moi je fais mes fonctions sur un sous ensemble 
+	- J'ai séparé les sujets en batch 
+
+- Le notebook de base j'ai réglé plusieurs problèmes et rendu reproductible 
+
+Si tâche 3 peut être mettre en format invoke : 
+- Est ce que les fonctions appellent des fichiers ou des fonctions 
+- Faire que ma troisième tâche soit le docker wtv 
+
+TO DO : 
+
+TACHE 1 
+
+fini 
+
+TACHE 2 
+
+X Rouler boucle test sur 2 participants avec la bonne configuration 
+X Rouler sur tout le monde 
+X Update des stats 
+X Recherche sur autres méthodes d'évaluation 
+X Faire des beaux graphiques 
+
+TACHE 3 :
+
+X Clean de task 
+	- Ajouter "" qui expliquent 
+X Clean du folder 
+X Clean des imports
+X Clean des fonctions 
+- Read me 
+	- Celui de invoke avec les instructions pour les données 
+
+Historique : 
+
+4 / 23 
+
+terminé la documentation du README, finit les derniers commits et push sur GitHub 
+Mini préparation de ce que je vais dire 
+
+4 / 22 
+
+- Finition de tasks.py 
+- Update ce qui a été fait pour les tâches 
+- Finalisation du code qui sauvegarde une figure
+- Finition sur les figures produites, changé en métriques de périmètre 
+
+4 / 16 
+
+Beaucoup de travail sur rendre exécutable à partir d'un template airoh après mes questions du cours 
+
+Changé le script fonctions.py en plus petits modules 
+Changé le code de visualisation pour que ça soit un notebook 
+Travail sur les fonctions boucle et stats, pour qu'elles soient appellables 
+
+4 / 15 
+
+Fait la fonction et la figure pour AVG seg, séparé en seg2gt et gt2seg 
+
+4 / 14 / 26 
+
+Amélioré les graphiques pour les métriques additionneles et fait en sorte qu'un script les produise 
+
+Ajouté une boucle qui continue avec le df déjà enregistré pour avoir tous plus de participants sans que ça crash 
+il a crash quand il en restait un alors je pense pas plus que data_test3 
+
+4 / 12 / 26 
+
+Found this very interesting site for other metrics 
+https://medium.com/mastering-data-science/understanding-evaluation-metrics-in-medical-image-segmentation-d289a373a3f 
+
+Pour la mesure de contour 
+from scipy.ndimage import distance_transform_edt
+
+
+4 / 9 / 26 
+
+J'essaye de tout mettre en fonction, j'ai créé fonction.py ou je mets toutes celles que j'ai à date 
+
+Je vais faire un script qui fait l'analyse pour la boucle à partir de fonctions seulement 
+
+J'ai flowstate ca va super bien, tout est rendu en script et appelle des fonctions de fc.py
+
+4 / 11 / 26 
+
+Travaillé sur le notebook qui fait des stats, fait des recherches sur potentielles autres métriques 
+
+7 / 4 / 26
+
+Changé la boucle statistiques en fixant des issues (bbox surtout) voir le word et en mettant les resultats dans un dictionnaire au lieu d'une [] pour que ça soit plus facile à ouvrir et faire des stats 
+
+Plein de bogues avec les fonctions mais j'ai reussi à clarifier
+
+Commencé la visu à mis chemin environ 
+
+3 / 4 / 26
+
+import pickle
+Fait la boucle qui sort tous les éléments de stats pour tous les sujets, au lieu de faire la mesure à l'intérieur de la boucle 
+
+3 / 31 / 26 
+
+Download du gros dataset 
+J'ai du conda install Kaggle donc ajouter au venv? 
+
+Fait un peu d'espace : 
+(base) cassa2@DESKTOP-R035LH9:~/psy3019/projet/data_full$ rm */*_flair.nii.gz
+(base) cassa2@DESKTOP-R035LH9:~/psy3019/projet/data_full$ rm */*_t1.nii.gz
+(base) cassa2@DESKTOP-R035LH9:~/psy3019/projet/data_full$ rm */*_t1ce.nii.gz
+
+3 / 28 / 26 
+
+Prédiction SAM : 15 s / image 
+Prédiction fine tuned : 15 s / image
+
+Fait un fichier complet d'environnement qui combine celui initial aux ajouts que j'ai du faire, et le notebook run au complet donc succès!
+
+Pour la loop 1 min 5 pour 2 sujets 
+
+3 / 26 / 26 
+
+Maintenant je suis rendue à faire run la loop, je l'essaye sur 2 participants 
+
+ISSUE : je dois mtn utiliser surface dice qui ne s'importe pas 
+---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+Cell In[33], line 2
+      1 #Compute DICE score on both original and fine-tuned models
+----> 2 from utils.SurfaceDice import compute_dice_coefficient
+      4 sam_dsc = compute_dice_coefficient(gt_2d>0, sam_seg>0)
+      5 medsam_dsc = compute_dice_coefficient(gt_2d>0, medsam_seg>0)
+
+ModuleNotFoundError: No module named 'utils'
+
+Je crois que ça c'est pas un package mais plutôt dans un dossier utils/compute_dice_score
+
+Comment Python traduit un import
+Quand tu écris :
+pythonfrom utils.SurfaceDice import compute_dice_coefficient
+Python cherche automatiquement dans cet ordre :
+
+Le dossier actuel ./utils/SurfaceDice.py
+Les packages installés (site-packages/)
+
+Donc utils.SurfaceDice est en fait l'équivalent de ./utils/SurfaceDice.py — Python fait la traduction . → / lui-même en arrière-plan !
+
+Donc je trouve une façon moi même de compute le dice score 
+
+Live debug de : 
+get_statistic_socre_on_dataset(data_path)
+qui devrait marcher sur juste 2 sujets mais à date 
+
+Ça marche!! ça a pris <1 minute pour 2 sujets et mon ordi a un peu alumé la fan 
+
+3 / 25 / 26 
+
+Trouvé le bon dataset : https://www.kaggle.com/datasets/dschettler8845/brats-2021-task1 
+
+Très grande base de données alors j'essaye de la télécharger partiellement en me faisant un compte Kaggle 
+Token : KGAT_a3be2f3c20b567b34919119582b68336
+
+(env_initial) cassa2@DESKTOP-R035LH9:~/psy3019/projet$ export KAGGLE_API_TOKEN=KGAT_6084ede81117b21fd21ac3c1fe59fb6b
+
+(env_initial) cassa2@DESKTOP-R035LH9:~/psy3019/projet$ kaggle datasets files dschettler8845/brats-2021-task1
+name                                size  creationDate
+---------------------------  -----------  --------------------------
+BraTS2021_00495.tar             10321920  2021-08-19 21:59:03.089000
+BraTS2021_00621.tar             10772480  2021-08-19 21:59:03.067000
+BraTS2021_Training_Data.tar  13396408320  2021-08-19 22:05:19.995000
+
+BraTS2021_00495.tar        → archive d'UN seul cas patient (4 modalités + masque)
+BraTS2021_00621.tar        → archive d'UN seul cas patient (4 modalités + masque)
+BraTS2021_Training_Data.tar → archive de TOUS les 1666 cas patients
+
+Je télécharge les deux individuels 
+kaggle datasets download dschettler8845/brats-2021-task1 -f BraTS2021_00495.tar
+kaggle datasets download dschettler8845/brats-2021-task1 -f BraTS2021_00621.tar
+
+Il y a une cellule pour extraire le .tar mais c'est pour tous les docs alors je le fait manuellement 
+tar -xf BraTS2021_00495.tar
+tar -xf BraTS2021_00621.tar
+
+J'ai besoin de ca : t2.nii.gz (image) et seg.nii.gz (segmentation) 
+mv BraTS2021_00495_t2.nii.gz BraTS2021_00495_seg.nii.gz BraTS2021_00621_t2.nii.gz BraTS2021_00621_seg.nii.gz data
+
+Mettre le reste : mv *.gz *.tar data_not_used
+
+Download le checkpoint de l'élève : 
+
+Recherche du checkpoint de SAM : 
+Trouvé ici https://github.com/facebookresearch/segment-anything/blob/main/README.md
+Dans le read me section modelcheckpoints, celui pour le vit-b based on the code 
+
+Réussi à download et faire les prochaines cellules 
+
+ISSUE : device = 'cuda:0'
+Selon ce que j'ai compris c'est pour un device 
+Quand PyTorch charge un modèle, chaque poids du réseau est stocké quelque part — soit dans la mémoire du CPU, soit dans la mémoire du GPU. Si le modèle est sur le GPU mais ta machine n'en a pas, ça plante — c'est exactement l'erreur que tu avais :
+Attempting to deserialize object on a CUDA device but 
+torch.cuda.is_available() is False
+
+
+3/4/25 
+
+Test de faire un .yml assez simple pour pouvoir ouvrir le code 
+Sans segment anything 
+conda env create -f environment.yml -n env_initial
+
+J'ai ajouté segment anything manuellement : 
+(env_initial) cassa2@DESKTOP-R035LH9:~/psy3019/projet$ pip install segment-anything
+Collecting segment-anything
+  Downloading segment_anything-1.0-py3-none-any.whl.metadata (487 bytes)
+Downloading segment_anything-1.0-py3-none-any.whl (36 kB)
+Installing collected packages: segment-anything
+Successfully installed segment-anything-1.0
+
+Si tout fonctionne je crois je l'ajouterais au env : 
+  - pip
+  - pip:
+      - segment-anything
+
+La fonction : from utils.SurfaceDice import compute_dice_coefficient
+Ne fonctionne pas, elle est utilisée pour la fin du code dont pour le moment je # 
+Je ne trouve pas non plus rien comme compute_dice_coefficient SAM sur GitHub / internet
+
+J'ai du ajouté plusieurs choses à l'environnement futur pour que les premières cellules roulent, tout résumé dans Env_notes.txt 
+
+# Chemins vers les fichiers .nii 
+scan_path = "./brain_images/BraTS2021_00002/BraTS2021_00002_t2.nii.gz" # image médicale (IRM)
+gt_path = "./brain_images/BraTS2021_00002/BraTS2021_00002_seg.nii.gz"  # gt pour ground truth = segmentation correspondante
+
+= l'organisation de la structure doit être : 
+
+projet/
+│── brain_images/
+│── Notebook.ipynb
+
+Je crois que à la place je devrais avoir un : 
+"Path vers les images = """ et ensuite ca serait plus reproductible 
+
+2/22/25 
+
+Pour ce code : 
+- BRaTS 2021 (du moins quelques sujets)
+Sur le site ça dit "Fait maintenant partit du BraTS 2023, les données ne sont plus disponibles ici 
+Note that starting this year, the label value for ET is "3" (compared to "4" in previous BraTS Challenges).
+
+Je cherche depuis 20 mins les données, partout ca me dit ne sont plus dispos 
+Ici ca c'est mis à marcher : 
+https://imagingdatasets.ucsf.edu/dataset/1 
+There are currently 461 UCSF-BMSR scans that can be used, noting that some are post-treatment and there are no T2 sequences. Currently only the ET tissue class (annotated as label 1) are a available. The full BraTS format annotations on ~325 cases will become available at the end of June.
+https://imagingdatasets.ucsf.edu/dataset/1
+Trouvé à partir d'ici : https://www.synapse.org/Synapse:syn51156910/wiki/622553
+
+- Les modèles 
+SAM : sam_vit_b_01ec64.pth
+MedSAM : modèle fine-tuné
+
+Finalement j'essayais de faire rouler le tutoriel fine-tuning donc je change de document 
+
+J'essaye de voir si le notebook roule 
+Création de environnement.yml
+- Mis tous les packages dessus 
+- Créer l'environnement : 
+conda env create -f environment.yml
+conda activate env_projet
+
+Erreur : segment_anything non disponible sur conda 
+
+TO DO : 
+requirements.txt et environnement.ylm 
+
+L'environnement.ylm a encore des problèmes : 
+
+manque tqtm
+
+segment_anything not available on conda → must be installed with pip
+
+utils.SurfaceDice ocal module → not installable; it just needs to be in your project folder or PYTHONPATH
+
+PyTorch + MONAI → best installed from the same channel for compatibility
+
+name: env_projet
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.12
+  - numpy
+  - matplotlib
+  - tqdm
+  - pytorch
+  - torchvision
+  - torchaudio
+  - monai
+  - pip
+  - pip:
+      - git+https://github.com/facebookresearch/segment-anything.git
