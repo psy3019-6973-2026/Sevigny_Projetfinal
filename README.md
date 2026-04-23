@@ -94,6 +94,9 @@ invoke fetch
 ```
 
 # Tâches 
+
+Pour voir les tâches initiales, présentés à la présentation de mis session, voir Presentation_initiale.md 
+
 Pour une documentation plus précise sur la timeline et les issues rencontrés de chaque tâche, voir documentation_taches.md 
 Pour mes notes (très personnelles et brouillones, plus comme un journal de bord que je tenais) à travers le temps, voir notes.txt 
 
@@ -114,6 +117,10 @@ Ce qui a été fait :
 -   Refactorisation de fonctions 
 -	Environnement.yml 
 		- Certains packages ont du être installés en pip 
+
+J'ai travaillé sur le Notebook_initial_reproduit.ipynb 
+Il était initialement dans un repo forked du projet original
+Je l'ai merge (pour l'historique) à la fin, voir Note repo git 
 
 ## 2. Tâche 2 : Script et reproductibilité 
 
@@ -157,8 +164,24 @@ Ce qui a été fait :
 	- Graphiques comparant les 4 métriques, conjointement pour le type (chevauchement et périmètre)
 	- Graphique permettant une meilleure compréhension du Dice score (permet de voir l'évolution pour chaque sujet)
 
+Toutes les figures finales sont dans output_data/Figures 
+
 # Utilisation d'IA 
 L'intelligence artificielle a été utilisée dans ce projet, surtout pour l'aide à la compréhension de certains concepts, la paufination de certains éléments de code et l'interprétation de messages d'erreurs. 
 
+# Note repo git 
 
+Ce git repo a été commencé lors de la tâche 3, car j'avais besoin d'un nouveau folder ou tester les composantes à partir de invoke, et dans l'original j'étais rendu avec trop de codes / scripts et fonctions non néttoyés 
+
+Ce repo comprend quand même plusieurs commits lié à la tâche 3 (visualisation) qui a été faite en parrallèle 
+À la fin, j'ai merge les historiques : 
+git remote add ancien-repo /home/cassa2/psy3019/projet
+git fetch ancien-repo
+git merge ancien-repo/main --allow-unrelated-histories -m "Fusion historique ancien projet"
+
+Les éléments importants du premier repo sont dans Archive : 
+- Le notebook initial avec ma documentation de reproduction (initiale)
+- La présentation d'étape avec les tâches originales, le choix et la description du projet 
+
+L'historique documente aussi l'évolution des premiers scripts exécutables dans le dossier code reproductible : git log --all -- codes_reproductibles/
 
