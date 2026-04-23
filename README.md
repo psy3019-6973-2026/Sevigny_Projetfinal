@@ -32,7 +32,7 @@ La deuxième, utilisée pour comparer les performances du modèle original et du
 La comparaison entre les modèles est faite à partir des Dice score. 
 Les résultats montrent que le modèle fine-tuned performe mieux.
 
-![Figure originale](Archive/Image1.png)
+<img src="Archive/Image1.png" style="width: 50%;">
 
 ## Choix du projet 
 J'ai choisi ce projet car une des techniques d'analyse de données en neuroscience cognitive avec laquelle je suis le moins à l'aise est l'utilisation de modèles d'intelligence artificielle. Ce projet est une bonne façon pour moi de me familiariser avec ceux-ci, sans avoir à entraîner un modèle dans son ensemble.
