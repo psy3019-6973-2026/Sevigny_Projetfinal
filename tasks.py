@@ -10,7 +10,7 @@ from invoke import task
     }
 )
 def import_file(c, name):
-    """🌐 Download a single file from a URL using urllib."""
+    """Ne pas utiliser, suivre les instructions du README pour le download de données"""
     from urllib.request import Request, urlopen
     
     files = c.config.get("files", {})
@@ -72,7 +72,7 @@ def import_file(c, name):
 @task
 def fetch(c):
     """
-    Retrieve all data assets.
+    Ne pas utiliser, suivre les instructions du README pour le download de données
     """
     import_file(c, "papers")
 
@@ -80,6 +80,15 @@ def fetch(c):
 def run_boucle(c):
     """
     Run la boucle sur les sujets dans source_data 
+    Effectue pour chaque sujet la segmentation de la tumeur sur une slice aléatoire de l'image t1 
+    avec les deux modèles (évalués)
+
+    Roule pour un maximum de 20 sujets à la fois, pour éviter la surcharge de mon ordinateur 
+    Il faut repartir la boucle jusqu'à ce qu'il ne reste plus de sujets manquants à la fin pour avoir 
+    tous les sujets dans source_data 
+
+    Sauvegarde dans output_data/resultats.pkl 
+    L'image, les deux segmentation, la segmentation originale et la slice de manière incrémentale (à chaque sujet)
     """
     input_dir = Path(c.config.get("source_data_dir"))
     output_dir = Path(c.config.get("output_data_dir"))
@@ -92,7 +101,8 @@ def run_boucle(c):
 @task
 def run_stats(c):
     """
-    Run toutes les métriques de comparaison sur le tableau résultats 
+    Run toutes les métriques de comparaison sur le fichier output_data/resultats.plk 
+    Store les métriques dans un tableau statistique dans output_data/resultats.csv 
     """
     resultats_dir = Path(c.config.get("output_data_dir"))
 
@@ -101,6 +111,12 @@ def run_stats(c):
 
 @task
 def run_notebook_explicatif(c, sujet="BraTS2021_00002"):
+    '''
+    Roule le Notebook éducatif (notebooks/explicatif/Notebook_exemple_airoh.ipynb)
+    Passe à travers toutes les étapes de segmentations et de métriques avec explications 
+    Fixé par défault pour le sujet 00002 
+    
+    '''
     from airoh.utils import run_figures
     print("sujet reçu :", repr(sujet))  # <-- ajoute ça
     c.config["sujet"] = sujet
@@ -109,6 +125,15 @@ def run_notebook_explicatif(c, sujet="BraTS2021_00002"):
 
 @task
 def save_visu_sujet(c, sujet) : 
+    '''
+    Produit visualisation finale pour le sujet donné 
+
+    Prend comme argument le sujet, donc la structure doit être : 
+    invoke save-visu-sujet --sujet BraTS2021_XXXXX
+
+    Sauvegarde la visualisation qui présente le scan original, la segmentation reelle et les deux segmentations 
+    des modèles 
+    '''
     from code.save_visu_sujet import visu
     c.config["sujet"] = sujet
 
@@ -119,6 +144,14 @@ def save_visu_sujet(c, sujet) :
 
 @task
 def run_figures(c):
+    '''
+    Produit et sauvegarde les figures comparatives entre les modèles pour toutes les métriques 
+
+    Roule le notebook : notebooks/visu/Notebook_figures.ipynb en entier, qui produit toutes 
+    les figures et imprime les sujets aux extrêmes (meilleurs et pire) pour chaque métrique 
+
+    Tous les graphiques sont enregistrés dans output_data/Figures
+    '''
     from airoh.utils import run_figures
     notebooks_dir = Path(c.config.get("notebooks_dir")) / "visu"
     #figures_dir = Path(c.config.get("figures_dir"))
