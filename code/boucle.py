@@ -29,7 +29,7 @@ from pathlib import Path
 
 def continue_statistic_score_on_dataset(data_path, output_path, modeles_path):
 
-    MAX_NEW_SUBJECTS = 5   
+    MAX_NEW_SUBJECTS = 25
     
     output_path = Path(output_path)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -75,8 +75,8 @@ def continue_statistic_score_on_dataset(data_path, output_path, modeles_path):
         # Load des fichiers
         scan_obj = nib.load(scan_path)
         gt_obj = nib.load(gt_path)
-        scan_2d_og = scan_obj.get_fdata()
-        gt_data = gt_obj.get_fdata()
+        scan_2d_og = scan_obj.get_fdata(dtype=np.float32)
+        gt_data = gt_obj.get_fdata(dtype=np.float32)
 
         # Obtient la seed random 
         subject_number = int(subject_id.split("_")[1])

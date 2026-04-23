@@ -100,10 +100,29 @@ def run_stats(c):
     run_stats(resultats_dir) 
 
 @task
-def run_notebook_explicatif(c):
+def run_notebook_explicatif(c, sujet="BraTS2021_00002"):
     from airoh.utils import run_figures
+    print("sujet reçu :", repr(sujet))  # <-- ajoute ça
+    c.config["sujet"] = sujet
     notebooks_dir = Path(c.config.get("notebooks_dir")) / "explicatif"
-    run_figures(c, notebooks_dir, keys=["source_data_dir", "output_data_dir", "models_dir"])
+    run_figures(c, notebooks_dir, keys=["source_data_dir", "output_data_dir", "models_dir", "sujet"])
+
+@task
+def save_visu_sujet(c, sujet) : 
+    from code.save_visu_sujet import visu
+    c.config["sujet"] = sujet
+
+    output_dir = Path(c.config.get("output_data_dir"))
+    output_figure = Path(c.config.get("figures_dir"))
+    visu(sujet, output_dir, output_figure) 
+
+
+
+#def run_notebook_explicatif(c, sujet):
+#    from airoh.utils import run_figures
+#    notebooks_dir = Path(c.config.get("notebooks_dir")) / "explicatif"
+#    c.config["sujet"] = sujet
+#    run_figures(c, notebooks_dir, keys=["source_data_dir", "output_data_dir", "models_dir", "sujet"])
 
 @task
 def run_figures(c):

@@ -58,7 +58,7 @@ def get_sam_seg(scan_2d, bbox_raw, sam_predictor) :
     sam_predictor.set_image(scan_2d)
     sam_seg, _, _ = sam_predictor.predict(point_coords=None, box=bbox_raw, multimask_output=False)
     #print(sam_seg.shape) 
-    print("Segmentation SAM terminée")
+    print("     Segmentation SAM terminée")
     return sam_seg
 
 def get_medsam_seg(scan_2d, bbox_raw, med_sam_model):
@@ -106,7 +106,7 @@ def get_medsam_seg(scan_2d, bbox_raw, med_sam_model):
         #print(medsam_seg.shape)
         #print(medsam_seg)
 
-        print("Segmentation MEDSAM terminée! :)")
+        print("     Segmentation MEDSAM terminée! :)")
         return medsam_seg
 
 def get_2_both_seg_scan(scan_2d, gt, modele_sam, modele_medsam) : 
