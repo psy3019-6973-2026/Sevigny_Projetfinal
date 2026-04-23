@@ -1,3 +1,9 @@
 source_data/
 .DS_store
 source_data/
+*.pkl
+*.png
+figures/
+visualisations/
+resultats/
+*.pth
