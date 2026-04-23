@@ -185,42 +185,40 @@ Tâche ajoutée après le cours sur les scripts
 La dernière tâche était initialement sur un Notebook explicatif du modèle, mais les analyses étaient 
 toutes regroupés dans un seul notebook, avec des chemins de fichiers hardcodés après ma première tâche et je considérais qu'il restait du travail considérable pour rendre les analyses reproductibles.  
 J'ai voulu d'abord séparer les grandes boucles d'analyses initiales en petites fonctions, puis scripts ce qui a grandement aidé la lisibilité, puis j'ai voulu accomplir le défi de mettre en format airoh.   
+- Séparé le notebook en 2 parties indépendantes :
+  - **a. Partie tutorielle** (NOTEBOOK) : explique chaque étape avec plusieurs visualisations
+  - **b. Segmentation automatique** : analyse de tous les sujets et comparaison des métriques pour les deux modèles
 
--	Séparé le notebook en 2 parties indépendantes : 
-		a. La partie tutorielle sur un sujet dans un notebook (NOTEBOOK), qui explique chaque étapes avec plusieurs visualisation 
-		b. La segmentatation automatique pour tous les sujets, ainsi que les mesures qui compare chaque métrique obtenue pour les deux modèles 
+- Rendu l'ensemble des analyses séparé en scripts exécutables appelés à partir de invoke :
+  - Codes explicatifs pour la section a. :
+    - `run-notebook-explicatif` : roule le notebook de partie a au complet
+    - `run-visu-sujet` : sauvegarde la visualisation finale pour un sujet sélectionné
+  - Codes pour l'analyse automatique de la section b. :
+    - `run-boucle`
+    - `run-stats`
+    - `run-figures`
 
--	Rendu l'ensemble des analyses séparé en scripts exécutables appelés à partir de invoke : 
-		- Codes explicatifs / ajoutés pour la section a. : 
-			•	run-notebook-explicatif : roule le notebook de partie a au complet 
-			•	run-visu-sujet : sauvegarde la visualisation finale pour un sujet sélectionné 
+  Ces commandes produisent une analyse statistique complète sur des couches aléatoires de segmentation pour chaque sujet.
 
-		- Codes pour l'analyse automatique de la section b. : 
-			•	Run-boucle 
-			•	Run-stats 
-			•	Run-figures 
+- Une fois l'environnement installé et les données téléchargées selon les instructions du README, l'analyse est totalement reproductible à partir de commandes invoke.
 
-Ces commandes produisent un analyse statistique complète sur des couches aléatoires de segmentation pour chaque sujet
+## 3. Tâche 3 : Visualisation et métriques
 
-Une fois l'environnement installé et les données downloadés selon les instructions du readme, mon analyse est totalement reproductible à partir de commandes invoke 
+**Tâche originale :**
+- Bonifier la figure de visualisation et documenter les étapes et choix méthodologiques
+- Ajouter une métrique de comparaison
 
-## 3. Tâche 3 : Visualisation et métriques 
-
-Tâche originale (tâche 2 initiale) : 
-•	Bonifier la figure de visualisation
-		- Documenter les étapes, choix méthodologiques et artistiques
-•	Ajouter une métrique de comparaison 
-
-Ce qui a été fait : 
-	- Recherche sur des métriques à utiliser et sélection 
-	- Amélioration du graphique de Dice score 
-		- Ajouté les points de mesure individuels, la barre indiquand un résultat significatif, un titre et des titres d'axes, une ligne pour la médiane 
-		- Amélioré l'esthétique 
-	- Ajouté la mesure de 4 autres métriques, 2 de chevauchement (Precision, Recall) et deux de périmètres (HD100, distance moyenne)
-		- Explications des métriques et justification des choix dans les Notebooks de Figure et celui explicatif 
-	- Graphiques comparant les 4 métriques, conjointement pour le type (chevauchement et périmètre)
-	- Graphique permettant une meilleure compréhension du Dice score (permet de voir l'évolution pour chaque sujet)
-
+**Ce qui a été fait :**
+- Recherche et sélection de métriques
+- Amélioration du graphique de Dice score :
+  - Ajout des points individuels, barre de significativité, titre, axes et ligne de médiane
+  - Amélioration de l'esthétique
+- Ajout de 4 métriques supplémentaires :
+  - 2 de chevauchement (Precision, Recall)
+  - 2 de périmètre (HD100, distance moyenne)
+  - Explications et justifications dans les notebooks
+- Graphiques comparant les 4 métriques conjointement par type (chevauchement et périmètre)
+- Graphique illustrant l'évolution du Dice score par sujet
 Toutes les figures finales sont dans output_data/Figures 
 
 # Utilisation d'IA 
