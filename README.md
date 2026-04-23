@@ -159,6 +159,12 @@ Pour voir les tâches initiales, présentés à la présentation de mis session,
 Pour une documentation plus précise sur la timeline et les issues rencontrés de chaque tâche, voir documentation_taches.md   
 Pour mes notes (très personnelles et brouillones, plus comme un journal de bord que je tenais) à travers le temps, voir notes.txt 
 
+### Tâches originales : 
+
+1. Reproduction du notebook
+2. Ajout de métriques et de visualisations -> tâche 3
+3. ~~Notebook explicatif sur le modèle~~ Automatisation via invoke
+
 ## 1. Tâche 1 : Reproduction du Notebook 
 
 But initial : Je veux reproduire le nootebook d'application des deux modèles entraînés
