@@ -234,6 +234,7 @@ Toutes les figures finales sont dans output_data/Figures
 
 Visualisation originale :   
 ![Figure originale](Archive/Image1.png)
+<img src="Archive/Image1.png" style="width: 50%;">
 
 Visualisations ajoutés :   
 ![Boxplot Dice](output_data/Figures/figure_dice.png)  
