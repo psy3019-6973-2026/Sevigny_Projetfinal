@@ -233,11 +233,10 @@ Toutes les figures finales sont dans output_data/Figures
 ### Comparaison du Dice score 
 
 Visualisation originale :   
-![Figure originale](Archive/Image1.png)
 <img src="Archive/Image1.png" style="width: 50%;">
 
 Visualisations ajoutés :   
-![Boxplot Dice](output_data/Figures/figure_dice.png)  
+<img src="output_data/Figures/figure_dice.png" style="width: 50%;">
 ![Comp Dice](output_data/Figures/figure_comparaison_dice.png)
  
 Le projet original obtenait un dice autour de 0.65 pour MEDSAM et autour de 0.72 pour SAM (obtenu du graphique)
@@ -246,8 +245,7 @@ Mes analyses produisent un résultat très proche, avec pour SAM 0.67 (0.90) et 
 
 ### Métriques de précision et recall
 
-
-![Precision recall](output_data/Figures/figure_recall_precision.png)
+<img src="output_data/Figures/figure_recall_precision.png" style="width: 50%;">
 
 On voit ici des différences importantes entre les deux modèles. SAM obtient une précision très élevée et homogène = quand il segmente quelque chose, c'est presque toujours du vrai tissu tumoral (peu de faux positifs). MedSAM est significativement plus bas, ce qui veut dire qu'il inclut davantage de tissu non tumoral dans ses segmentations.
 
@@ -256,7 +254,7 @@ Par contre, SAM a un recall beaucoup plus faible et très variable — il manque
 
 ### Métriques de périmètre 
 
-![Périmètre](output_data/Figures/figure_perimètre.png)
+<img src="output_data/Figures/figure_perimètre.png" style="width: 50%;">
 
 Ici on peut voir que pour les deux métriques de périmètre, MEDSAM performe mieux car la distance entre la segmentation prédite est réelle est significativement plus faible que MEDSAM 
 
