@@ -1,4 +1,25 @@
-jupyter>=1.0
-nbconvert>=7.0
-matplotlib>=3.5
-pandas>=1.3
+# Generated from environment.yml for pip/uv installs (no conda required)
+# For CPU-only PyTorch (default). For CUDA, replace the torch lines with the
+# appropriate index URL: https://pytorch.org/get-started/locally/
+torch
+torchvision
+torchaudio
+
+requests
+invoke
+numpy
+matplotlib
+tqdm
+monai
+seaborn
+nibabel
+ipywidgets
+ipykernel
+scipy
+
+# pip-only packages (were already under pip: in environment.yml)
+airoh
+segment-anything
+scikit-image
+nbconvert
+kaggle
