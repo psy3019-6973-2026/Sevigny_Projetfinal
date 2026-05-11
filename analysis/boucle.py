@@ -4,8 +4,8 @@ join = os.path.join
 import nibabel as nib
 import numpy as np
 import pickle
-from code import utiles
-from code import modeles
+from analysis import utiles
+from analysis import modeles
 from pathlib import Path
 
 def continue_statistic_score_on_dataset(data_path, output_path, modeles_path):

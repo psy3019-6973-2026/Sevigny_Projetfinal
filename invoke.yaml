@@ -5,7 +5,7 @@ docker_image: airoh-template
 models_dir: models
 
 # Code folder
-code_dir: code
+code_dir: analysis
 
 # Notebooks folders
 notebooks_dir: notebooks

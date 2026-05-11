@@ -94,7 +94,7 @@ def run_boucle(c):
     output_dir = Path(c.config.get("output_data_dir"))
     models_dir = Path(c.config.get("models_dir"))
 
-    from code.boucle import continue_statistic_score_on_dataset
+    from analysis.boucle import continue_statistic_score_on_dataset
     continue_statistic_score_on_dataset(input_dir, output_dir, models_dir)
 
 # Enlevé run boucle avant car sinon la roule à chaque fois idk
@@ -106,7 +106,7 @@ def run_stats(c):
     """
     resultats_dir = Path(c.config.get("output_data_dir"))
 
-    from code.stats import run_stats
+    from analysis.stats import run_stats
     run_stats(resultats_dir) 
 
 @task
@@ -117,11 +117,11 @@ def run_notebook_explicatif(c, sujet="BraTS2021_00002"):
     Fixé par défault pour le sujet 00002 
     
     '''
-    from airoh.utils import run_figures
+    from airoh.utils import run_notebooks
     print("sujet reçu :", repr(sujet))  # <-- ajoute ça
     c.config["sujet"] = sujet
     notebooks_dir = Path(c.config.get("notebooks_dir")) / "explicatif"
-    run_figures(c, notebooks_dir, keys=["source_data_dir", "output_data_dir", "models_dir", "sujet"])
+    run_notebooks(c, notebooks_path=notebooks_dir, keys=["source_data_dir", "output_data_dir", "models_dir", "sujet"])
 
 @task
 def save_visu_sujet(c, sujet) : 
@@ -134,7 +134,7 @@ def save_visu_sujet(c, sujet) :
     Sauvegarde la visualisation qui présente le scan original, la segmentation reelle et les deux segmentations 
     des modèles 
     '''
-    from code.save_visu_sujet import visu
+    from analysis.save_visu_sujet import visu
     c.config["sujet"] = sujet
 
     output_dir = Path(c.config.get("output_data_dir"))
@@ -152,7 +152,6 @@ def run_figures(c):
 
     Tous les graphiques sont enregistrés dans output_data/Figures
     '''
-    from airoh.utils import run_figures
+    from airoh.utils import run_notebooks
     notebooks_dir = Path(c.config.get("notebooks_dir")) / "visu"
-    #figures_dir = Path(c.config.get("figures_dir"))
-    run_figures(c, notebooks_dir, keys=["output_data_dir", "figures_dir"])
+    run_notebooks(c, notebooks_path=notebooks_dir, keys=["output_data_dir", "figures_dir"])

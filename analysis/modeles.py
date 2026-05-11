@@ -7,7 +7,7 @@ from segment_anything import SamPredictor, sam_model_registry
 from segment_anything.utils.transforms import ResizeLongestSide
 import skimage
 import numpy as np
-from code import utiles 
+from analysis import utiles 
 from pathlib import Path
 
 def initialisation_modeles(modeles_path) : 

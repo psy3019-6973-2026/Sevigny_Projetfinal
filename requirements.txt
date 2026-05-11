@@ -18,7 +18,7 @@ ipykernel
 scipy
 
 # pip-only packages (were already under pip: in environment.yml)
-airoh
+airoh==0.1.4
 segment-anything
 scikit-image
 nbconvert
